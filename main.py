@@ -196,6 +196,9 @@ optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
 results = {'train_loss': [], 'train_acc@1': [], 'train_acc@5': [],
             'test_loss': [], 'test_acc@1': [], 'test_acc@5': []}
 
+if not os.path.exists('results'):
+    os.mkdir('results')
+
 for epoch in range(1, linear_epoch + 1):
     train_loss, train_acc_1, train_acc_5 = train_val(net, train_dl_linear, optimizer)
     results['train_loss'].append(train_loss)
