@@ -19,14 +19,15 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         # encoder
-        self.f = net.encoders
+        self.f = net
         # classifier
         self.fc = nn.Linear(2048, num_class, bias=True)
         # self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
         # self.load_state_dict(net, strict=False)
 
     def forward(self, x):
-        x = self.f(x)
+        # x = self.f(x)
+        x = self.f.encode(x)
         feature = torch.flatten(x, start_dim=1)
         out = self.fc(feature)
         return out
