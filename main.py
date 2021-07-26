@@ -186,7 +186,7 @@ test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
 
 linear_epoch = 100
 
-net = Net(num_class=len(train_dl_linear.classes), net = dae).cuda()
+net = Net(num_class=len(train_linear.classes), net = dae).cuda()
 for param in model.f.parameters():
     param.requires_grad = False
 flops, params = profile(model, inputs=(torch.randn(1, 3, 32, 32).cuda(),))
