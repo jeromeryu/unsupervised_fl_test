@@ -61,7 +61,7 @@ train_dl_flat = DataLoader(
 hidden_dimensions = [
     {
         "hidden_dim": 2000, 
-        "num_epochs": 2, # original 10
+        "num_epochs": 10, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 96, 
         "display_dim2": 32, 
@@ -69,7 +69,7 @@ hidden_dimensions = [
     }, 
     {
         "hidden_dim": 1000, 
-        "num_epochs": 2, # original 10
+        "num_epochs": 10, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 50, 
         "display_dim2": 40, 
@@ -77,7 +77,7 @@ hidden_dimensions = [
     },
     {
         "hidden_dim": 500, 
-        "num_epochs": 2, # original 10
+        "num_epochs": 10, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 25, 
         "display_dim2": 40, 
@@ -85,7 +85,7 @@ hidden_dimensions = [
     },
     {
         "hidden_dim": 30, 
-        "num_epochs": 2, # original 30
+        "num_epochs": 30, # original 30
         "learning_rate": 0.001, # use much lower LR for gaussian to avoid exploding gradient
         "display_dim1": 25, 
         "display_dim2": 20, 
@@ -99,7 +99,6 @@ visible_dim = CIFAR_NUM_PIXELS
 hidden_dim = None
 models = [] # trained RBM models
 for configs in hidden_dimensions:
-    print("config")    
     # parse configs
     hidden_dim = configs["hidden_dim"]
     num_epochs = configs["num_epochs"]
@@ -114,7 +113,6 @@ for configs in hidden_dimensions:
     
     # display sample output
     display_output(v, v_pred, d1, d2)
-    print("display")
     # rederive new data loader based on hidden activations of trained model
     new_data = []
     for data_list in new_train_dl:
@@ -135,7 +133,7 @@ lr = 1e-3
 dae = DAE(models).to(DEVICE)
 loss = nn.MSELoss()
 optimizer = optim.Adam(dae.parameters(), lr)
-num_epochs = 2
+num_epochs = 50
 
 if not os.path.exists('images'):
     os.mkdir('images')
@@ -154,24 +152,6 @@ for epoch in range(num_epochs):
     running_loss = np.mean(losses)
     print(f"Epoch {epoch}: {running_loss}")
 
-
-    # for data, target in test_dl:
-    #     data = data.view(-1, CIFAR_NUM_PIXELS).detach().cpu().numpy()
-
-    #     data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
-    #     v_pred = dae(data)
-    #     batch_loss = loss(data, v_pred)
-    #     total_num += data.size(0)
-    #     total_loss += loss.item() * data.size(0)
-    #     prediction = torch.argsort(v_pred, dim=-1, descending=True)
-    #     total_correct_1 += torch.sum((prediction[:, 0:1] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
-    #     total_correct_5 += torch.sum((prediction[:, 0:5] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
-
-    # print('Epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}% ACC@5: {:.2f}%'
-    #     .format(epoch, num_epochs, total_loss / total_num,
-    #     total_correct_1 / total_num * 100, total_correct_5 / total_num * 100))
-
-
     if epoch % 10 == 9:
         # show visual progress every 10 epochs
         display_output(data, v_pred, v0_fname="images/original_digits.png", vk_fname="images/reconstructed_digits_dae.png")
@@ -183,7 +163,7 @@ test_linear = datasets.CIFAR10(root='data', train=False, transform=torchvision.t
 train_dl_linear = DataLoader(train, batch_size=64, shuffle=True)
 test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
 
-linear_epoch = 2
+linear_epoch = 100
 
 net = Net(num_class=len(train_linear.classes), net = dae).cuda()
 for param in net.f.parameters():
