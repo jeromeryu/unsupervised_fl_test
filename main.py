@@ -187,20 +187,20 @@ test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
 linear_epoch = 2
 
 net = Net(num_class=len(train_linear.classes), net = dae).cuda()
-for param in model.f.parameters():
+for param in net.f.parameters():
     param.requires_grad = False
-flops, params = profile(model, inputs=(torch.randn(1, 3, 32, 32).cuda(),))
+flops, params = profile(net, inputs=(torch.randn(1, 3, 32, 32).cuda(),))
 flops, params = clever_format([flops, params])
 print('# Model Params: {} FLOPs: {}'.format(params, flops))
-optimizer = optim.Adam(model.fc.parameters(), lr=1e-3, weight_decay=1e-6)
+optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
 loss_criterion = nn.CrossEntropyLoss()
 
 for epoch in range(1, linear_epoch + 1):
-    train_loss, train_acc_1, train_acc_5 = train_val(model, train_loader, optimizer)
+    train_loss, train_acc_1, train_acc_5 = train_val(net, train_loader, optimizer)
     results['train_loss'].append(train_loss)
     results['train_acc@1'].append(train_acc_1)
     results['train_acc@5'].append(train_acc_5)
-    test_loss, test_acc_1, test_acc_5 = train_val(model, test_loader, None)
+    test_loss, test_acc_1, test_acc_5 = train_val(net, test_loader, None)
     results['test_loss'].append(test_loss)
     results['test_acc@1'].append(test_acc_1)
     results['test_acc@5'].append(test_acc_5)
