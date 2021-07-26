@@ -51,7 +51,7 @@ train_dl_flat = DataLoader(
 )
 
 test_dl_flat = DataLoader(
-    TensorDataset(torch.Tensor(flat_test_input).to(DEVICE)),
+    TensorDataset(torch.Tensor(flat_test_input).to(DEVICE)), torch.Tensor(test_labels).to(DEVICE),
     batch_size=64,
     shuffle=False
 )
