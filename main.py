@@ -135,7 +135,7 @@ lr = 1e-3
 dae = DAE(models).to(DEVICE)
 loss = nn.MSELoss()
 optimizer = optim.Adam(dae.parameters(), lr)
-num_epochs = 10
+num_epochs = 2
 
 if not os.path.exists('images'):
     os.mkdir('images')
@@ -188,7 +188,7 @@ linear_epoch = 2
 net = Net(num_class=len(train_linear.classes), net = dae).cuda()
 for param in net.f.parameters():
     param.requires_grad = False
-flops, params = profile(net, inputs=(torch.Tensor(torch.randn(1, 3, 32, 32).cuda().view(-1, 1024).detach().numpy()),))
+flops, params = profile(net, inputs=(torch.Tensor(torch.randn(1, 3, 32, 32).view(-1, 1024).detach().cpu().numpy()),))
 flops, params = clever_format([flops, params])
 print('# Model Params: {} FLOPs: {}'.format(params, flops))
 optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
