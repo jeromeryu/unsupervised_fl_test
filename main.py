@@ -188,7 +188,7 @@ linear_epoch = 2
 net = Net(num_class=len(train_linear.classes), net = dae).cuda()
 for param in net.f.parameters():
     param.requires_grad = False
-flops, params = profile(net, inputs=(torch.Tensor(torch.randn(1, 3, 32, 32).cuda().view(-1, 1024).detach().cpu().numpy()),))
+flops, params = profile(net, inputs=(torch.Tensor(torch.randn(1, 3, 32, 32).cuda().view(-1, 1024).detach().numpy()),))
 flops, params = clever_format([flops, params])
 print('# Model Params: {} FLOPs: {}'.format(params, flops))
 optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
