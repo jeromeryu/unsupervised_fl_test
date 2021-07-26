@@ -23,7 +23,7 @@ class Net(nn.Module):
         # classifier
         self.fc = nn.Linear(2048, num_class, bias=True)
         # self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
-        self.load_state_dict(net, strict=False)
+        # self.load_state_dict(net, strict=False)
 
     def forward(self, x):
         x = self.f(x)
