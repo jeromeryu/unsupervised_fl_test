@@ -12,7 +12,7 @@ from tqdm import tqdm
 # import utils
 # from model import Model
 from ae.dae import DAE
-
+import main
 
 class Net(nn.Module):
     def __init__(self, num_class, net):
@@ -41,7 +41,9 @@ def train_val(net, data_loader, train_optimizer):
     total_loss, total_correct_1, total_correct_5, total_num, data_bar = 0.0, 0.0, 0.0, 0, tqdm(data_loader)
     with (torch.enable_grad() if is_train else torch.no_grad()):
         for data, target in data_bar:
-            data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
+            data = data.view(-1, 1024).detach().cpu().numpy()
+            # data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
+            target = target.cuda(non_blocking=True)
             out = net(data)
             loss = loss_criterion(out, target)
 
