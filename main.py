@@ -178,11 +178,13 @@ for epoch in range(num_epochs):
         display_output(data, v_pred, v0_fname="images/original_digits.png", vk_fname="images/reconstructed_digits_dae.png")
 
 
-
+# linear classification
 train_linear = datasets.CIFAR10(root='data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
 test_linear = datasets.CIFAR10(root='data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
 train_dl_linear = DataLoader(train, batch_size=64, shuffle=True)
 test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
+
+linear_epoch = 100
 
 net = Net(num_class=len(train_dl_linear.classes), net = dae).cuda()
 for param in model.f.parameters():
@@ -193,7 +195,7 @@ print('# Model Params: {} FLOPs: {}'.format(params, flops))
 optimizer = optim.Adam(model.fc.parameters(), lr=1e-3, weight_decay=1e-6)
 loss_criterion = nn.CrossEntropyLoss()
 
-for epoch in range(1, epochs + 1):
+for epoch in range(1, linear_epoch + 1):
     train_loss, train_acc_1, train_acc_5 = train_val(model, train_loader, optimizer)
     results['train_loss'].append(train_loss)
     results['train_acc@1'].append(train_acc_1)
