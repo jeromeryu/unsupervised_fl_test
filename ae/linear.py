@@ -21,20 +21,24 @@ class Net(nn.Module):
         # encoder
         self.f = net
         # classifier
-        self.fc = nn.Linear(2048, num_class, bias=True)
+        self.fc = nn.Linear(30, num_class, bias=True)
         # self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
         # self.load_state_dict(net, strict=False)
 
     def forward(self, x):
         # x = self.f(x)
         x = self.f.encode(x)
+        print(x)
+        print(x.size())
         feature = torch.flatten(x, start_dim=1)
+        print(feature)
         out = self.fc(feature)
         return out
 
 
 # train or test for one epoch
 def train_val(net, data_loader, train_optimizer):
+    loss_criterion = nn.CrossEntropyLoss()
     is_train = train_optimizer is not None
     net.train() if is_train else net.eval()
 
