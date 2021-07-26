@@ -149,3 +149,6 @@ for epoch in range(num_epochs):
     if epoch % 10 == 9:
         # show visual progress every 10 epochs
         display_output(data, v_pred, v0_fname="images/original_digits.png", vk_fname="images/reconstructed_digits_dae.png")
+
+transformed = dae.encode(torch.Tensor(flat_test_input[0:5000]).to(DEVICE)).detach().cpu().numpy()
+display_2d_repr(transformed, test_labels, "images/dae_repr.png")
