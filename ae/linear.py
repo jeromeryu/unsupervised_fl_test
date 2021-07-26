@@ -12,7 +12,7 @@ from tqdm import tqdm
 # import utils
 # from model import Model
 from ae.dae import DAE
-import main
+# import main
 
 class Net(nn.Module):
     def __init__(self, num_class, net):
