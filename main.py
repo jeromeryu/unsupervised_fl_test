@@ -63,7 +63,7 @@ hidden_dimensions = [
         "hidden_dim": 2000, 
         "num_epochs": 2, # original 10
         "learning_rate": 0.1, 
-        "display_dim1": 32, 
+        "display_dim1": 96, 
         "display_dim2": 32, 
         "use_gaussian": False
     }, 
