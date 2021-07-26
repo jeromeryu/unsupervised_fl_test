@@ -195,11 +195,11 @@ optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
 loss_criterion = nn.CrossEntropyLoss()
 
 for epoch in range(1, linear_epoch + 1):
-    train_loss, train_acc_1, train_acc_5 = train_val(net, train_loader, optimizer)
+    train_loss, train_acc_1, train_acc_5 = train_val(net, train_dl_linear, optimizer)
     results['train_loss'].append(train_loss)
     results['train_acc@1'].append(train_acc_1)
     results['train_acc@5'].append(train_acc_5)
-    test_loss, test_acc_1, test_acc_5 = train_val(net, test_loader, None)
+    test_loss, test_acc_1, test_acc_5 = train_val(net, test_dl_linear, None)
     results['test_loss'].append(test_loss)
     results['test_acc@1'].append(test_acc_1)
     results['test_acc@5'].append(test_acc_5)
