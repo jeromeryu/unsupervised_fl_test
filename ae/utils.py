@@ -31,7 +31,7 @@ def seed_everything(seed=42):
     torch.backends.cudnn.deterministic = True
 
 
-def display_output(v0, vk, dim1=32, dim2=32, v0_fname=None, vk_fname=None):
+def display_output(v0, vk, dim1=96, dim2=32, v0_fname=None, vk_fname=None):
     """Dsplaying the original and reconstructed images for comparison
 
     Parameters
