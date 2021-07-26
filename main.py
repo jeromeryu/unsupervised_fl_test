@@ -154,8 +154,9 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch}: {running_loss}")
 
     total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
-    for data, target in test_dl_flat:
-        data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
+
+    for i in test_dl_flat:
+        data, target = i[0].cuda(non_blocking=True), i[1].cuda(non_blocking=True)
         v_pred = dae(data)
         batch_loss = loss(data, v_pred)
         total_num += data.size(0)
