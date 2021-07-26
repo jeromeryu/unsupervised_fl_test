@@ -129,6 +129,9 @@ loss = nn.MSELoss()
 optimizer = optim.Adam(dae.parameters(), lr)
 num_epochs = 50
 
+if not os.path.exists('images'):
+    os.mkdir('iamges')
+
 # train
 for epoch in range(num_epochs):
     losses = []
