@@ -3,6 +3,7 @@ import sys
 
 import torch.nn as nn
 import torch.optim as optim
+from torch.types import Device
 import torchvision
 from sklearn.decomposition import PCA
 from torch.autograd import Variable
@@ -51,7 +52,7 @@ train_dl_flat = DataLoader(
 )
 
 test_dl_flat = DataLoader(
-    TensorDataset(torch.Tensor(flat_test_input).to(DEVICE)), 
+    TensorDataset(torch.Tensor(flat_test_input).to(DEVICE), torch.Tensor(test_labels).to(DEVICE)), 
     batch_size=64,
     shuffle=False
 )
@@ -155,8 +156,8 @@ for epoch in range(num_epochs):
 
     total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
 
-    for i in test_dl:
-        data, target = i[0].cuda(non_blocking=True), i[1].cuda(non_blocking=True)
+    for data, target in test_dl:
+        data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
         v_pred = dae(data)
         batch_loss = loss(data, v_pred)
         total_num += data.size(0)
