@@ -28,10 +28,7 @@ class Net(nn.Module):
     def forward(self, x):
         # x = self.f(x)
         x = self.f.encode(x)
-        print(x)
-        print(x.size())
         feature = torch.flatten(x, start_dim=1)
-        print(feature)
         out = self.fc(feature)
         return out
 
@@ -45,10 +42,8 @@ def train_val(net, data_loader, train_optimizer):
     total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
     with (torch.enable_grad() if is_train else torch.no_grad()):
         for data, target in data_loader:
-            print(1, data.size())
             data = data.view(-1, 1024 * 3).detach().cpu().numpy()
             data = torch.Tensor(data).cuda()
-            print(2, data.size())
             # data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
             target = target.cuda(non_blocking=True)
             out = net(data)
