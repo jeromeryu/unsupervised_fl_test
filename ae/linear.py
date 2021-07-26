@@ -19,7 +19,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         # encoder
-        self.f = DAE().encoders
+        self.f = net.encoders
         # classifier
         self.fc = nn.Linear(2048, num_class, bias=True)
         # self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
