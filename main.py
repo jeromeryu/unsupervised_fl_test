@@ -28,7 +28,7 @@ from ae.linear import *
 # test_dl = DataLoader(test, batch_size=64, shuffle=False)
 
 # MNIST_NUM_PIXELS = 784 # 28x28
-CIFAR_NUM_PIXELS = 1024 # 32X32
+CIFAR_NUM_PIXELS = 1024 * 3 # 32X32
 
 train = datasets.CIFAR10(root='data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
 test = datasets.CIFAR10(root='data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
@@ -192,7 +192,6 @@ for param in net.f.parameters():
 # flops, params = clever_format([flops, params])
 # print('# Model Params: {} FLOPs: {}'.format(params, flops))
 optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
-loss_criterion = nn.CrossEntropyLoss()
 
 for epoch in range(1, linear_epoch + 1):
     train_loss, train_acc_1, train_acc_5 = train_val(net, train_dl_linear, optimizer)

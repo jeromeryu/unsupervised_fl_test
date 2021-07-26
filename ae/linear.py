@@ -46,7 +46,7 @@ def train_val(net, data_loader, train_optimizer):
     with (torch.enable_grad() if is_train else torch.no_grad()):
         for data, target in data_bar:
             print(1, data.size())
-            data = data.view(-1, 1024).detach().cpu().numpy()
+            data = data.view(-1, 1024 * 3).detach().cpu().numpy()
             data = torch.Tensor(data).cuda()
             print(2, data.size())
             # data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
