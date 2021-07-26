@@ -50,15 +50,24 @@ train_dl_flat = DataLoader(
     shuffle=False
 )
 
+# 2000 1000 500 30
 hidden_dimensions = [
     {
-        "hidden_dim": 1000, 
+        "hidden_dim": 2000, 
         "num_epochs": 10, 
         "learning_rate": 0.1, 
         "display_dim1": 32, 
         "display_dim2": 32, 
         "use_gaussian": False
     }, 
+    {
+        "hidden_dim": 1000, 
+        "num_epochs": 10, 
+        "learning_rate": 0.1, 
+        "display_dim1": 50, 
+        "display_dim2": 40, 
+        "use_gaussian": False
+    },
     {
         "hidden_dim": 500, 
         "num_epochs": 10, 
@@ -68,19 +77,11 @@ hidden_dimensions = [
         "use_gaussian": False
     },
     {
-        "hidden_dim": 250, 
-        "num_epochs": 10, 
-        "learning_rate": 0.1, 
-        "display_dim1": 25, 
-        "display_dim2": 20, 
-        "use_gaussian": False
-    },
-    {
-        "hidden_dim": 2, 
+        "hidden_dim": 30, 
         "num_epochs": 30, 
         "learning_rate": 0.001, # use much lower LR for gaussian to avoid exploding gradient
         "display_dim1": 25, 
-        "display_dim2": 10, 
+        "display_dim2": 20, 
         "use_gaussian": True # use a Gaussian distribution for the last hidden layer to let it take advantage of continuous values
     }
 ]
