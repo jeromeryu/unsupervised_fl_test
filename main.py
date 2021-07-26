@@ -51,11 +51,11 @@ train_dl_flat = DataLoader(
     shuffle=False
 )
 
-test_dl_flat = DataLoader(
-    TensorDataset(torch.Tensor(flat_test_input).to(DEVICE), torch.Tensor(test_labels).to(DEVICE)), 
-    batch_size=64,
-    shuffle=False
-)
+# test_dl_flat = DataLoader(
+#     TensorDataset(torch.Tensor(flat_test_input).to(DEVICE), torch.Tensor(test_labels).to(DEVICE)), 
+#     batch_size=64,
+#     shuffle=False
+# )
 
 # 2000 1000 500 30
 hidden_dimensions = [
@@ -157,6 +157,8 @@ for epoch in range(num_epochs):
     total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
 
     for data, target in test_dl:
+        data = data.view(-1, CIFAR_NUM_PIXELS).detach().cpu().numpy()
+
         data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
         v_pred = dae(data)
         batch_loss = loss(data, v_pred)
