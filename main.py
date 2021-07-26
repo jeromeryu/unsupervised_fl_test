@@ -154,7 +154,6 @@ for epoch in range(num_epochs):
     running_loss = np.mean(losses)
     print(f"Epoch {epoch}: {running_loss}")
 
-    total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
 
     # for data, target in test_dl:
     #     data = data.view(-1, CIFAR_NUM_PIXELS).detach().cpu().numpy()
