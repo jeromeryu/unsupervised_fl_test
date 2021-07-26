@@ -61,7 +61,7 @@ train_dl_flat = DataLoader(
 hidden_dimensions = [
     {
         "hidden_dim": 2000, 
-        "num_epochs": 10, 
+        "num_epochs": 2, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 32, 
         "display_dim2": 32, 
@@ -69,7 +69,7 @@ hidden_dimensions = [
     }, 
     {
         "hidden_dim": 1000, 
-        "num_epochs": 10, 
+        "num_epochs": 2, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 50, 
         "display_dim2": 40, 
@@ -77,7 +77,7 @@ hidden_dimensions = [
     },
     {
         "hidden_dim": 500, 
-        "num_epochs": 10, 
+        "num_epochs": 2, # original 10
         "learning_rate": 0.1, 
         "display_dim1": 25, 
         "display_dim2": 40, 
@@ -85,7 +85,7 @@ hidden_dimensions = [
     },
     {
         "hidden_dim": 30, 
-        "num_epochs": 30, 
+        "num_epochs": 2, # original 30
         "learning_rate": 0.001, # use much lower LR for gaussian to avoid exploding gradient
         "display_dim1": 25, 
         "display_dim2": 20, 
@@ -135,7 +135,7 @@ lr = 1e-3
 dae = DAE(models).to(DEVICE)
 loss = nn.MSELoss()
 optimizer = optim.Adam(dae.parameters(), lr)
-num_epochs = 50
+num_epochs = 10
 
 if not os.path.exists('images'):
     os.mkdir('images')
@@ -184,7 +184,7 @@ test_linear = datasets.CIFAR10(root='data', train=False, transform=torchvision.t
 train_dl_linear = DataLoader(train, batch_size=64, shuffle=True)
 test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
 
-linear_epoch = 100
+linear_epoch = 2
 
 net = Net(num_class=len(train_linear.classes), net = dae).cuda()
 for param in model.f.parameters():
