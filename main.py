@@ -20,7 +20,7 @@ from ae.dae import DAE, Naive_DAE
 from ae.demo_train_utils import train_rbm
 from ae.rbm import RBM
 from ae.utils import *
-
+from ae.linear import *
 
 # train = MNIST(MNIST_DIR, train=True, download=False, transform=torchvision.transforms.ToTensor())
 # test = MNIST(MNIST_DIR, train=False, download=False, transform=torchvision.transforms.ToTensor())
@@ -156,26 +156,60 @@ for epoch in range(num_epochs):
 
     total_loss, total_correct_1, total_correct_5, total_num = 0.0, 0.0, 0.0, 0
 
-    for data, target in test_dl:
-        data = data.view(-1, CIFAR_NUM_PIXELS).detach().cpu().numpy()
+    # for data, target in test_dl:
+    #     data = data.view(-1, CIFAR_NUM_PIXELS).detach().cpu().numpy()
 
-        data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
-        v_pred = dae(data)
-        batch_loss = loss(data, v_pred)
-        total_num += data.size(0)
-        total_loss += loss.item() * data.size(0)
-        prediction = torch.argsort(v_pred, dim=-1, descending=True)
-        total_correct_1 += torch.sum((prediction[:, 0:1] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
-        total_correct_5 += torch.sum((prediction[:, 0:5] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
+    #     data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
+    #     v_pred = dae(data)
+    #     batch_loss = loss(data, v_pred)
+    #     total_num += data.size(0)
+    #     total_loss += loss.item() * data.size(0)
+    #     prediction = torch.argsort(v_pred, dim=-1, descending=True)
+    #     total_correct_1 += torch.sum((prediction[:, 0:1] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
+    #     total_correct_5 += torch.sum((prediction[:, 0:5] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
 
-    print('Epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}% ACC@5: {:.2f}%'
-        .format(epoch, num_epochs, total_loss / total_num,
-        total_correct_1 / total_num * 100, total_correct_5 / total_num * 100))
+    # print('Epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}% ACC@5: {:.2f}%'
+    #     .format(epoch, num_epochs, total_loss / total_num,
+    #     total_correct_1 / total_num * 100, total_correct_5 / total_num * 100))
 
 
     if epoch % 10 == 9:
         # show visual progress every 10 epochs
         display_output(data, v_pred, v0_fname="images/original_digits.png", vk_fname="images/reconstructed_digits_dae.png")
+
+
+
+train_linear = datasets.CIFAR10(root='data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+test_linear = datasets.CIFAR10(root='data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+train_dl_linear = DataLoader(train, batch_size=64, shuffle=True)
+test_dl_linear = DataLoader(test, batch_size=64, shuffle=False)
+
+net = Net(num_class=len(train_dl_linear.classes), net = dae).cuda()
+for param in model.f.parameters():
+    param.requires_grad = False
+flops, params = profile(model, inputs=(torch.randn(1, 3, 32, 32).cuda(),))
+flops, params = clever_format([flops, params])
+print('# Model Params: {} FLOPs: {}'.format(params, flops))
+optimizer = optim.Adam(model.fc.parameters(), lr=1e-3, weight_decay=1e-6)
+loss_criterion = nn.CrossEntropyLoss()
+
+for epoch in range(1, epochs + 1):
+    train_loss, train_acc_1, train_acc_5 = train_val(model, train_loader, optimizer)
+    results['train_loss'].append(train_loss)
+    results['train_acc@1'].append(train_acc_1)
+    results['train_acc@5'].append(train_acc_5)
+    test_loss, test_acc_1, test_acc_5 = train_val(model, test_loader, None)
+    results['test_loss'].append(test_loss)
+    results['test_acc@1'].append(test_acc_1)
+    results['test_acc@5'].append(test_acc_5)
+    print(test_loss, test_acc_1, test_acc_5)
+    # save statistics
+    data_frame = pd.DataFrame(data=results, index=range(1, epoch + 1))
+    data_frame.to_csv('results/linear_statistics.csv', index_label='epoch')
+    # if test_acc_1 > best_acc:
+    #     best_acc = test_acc_1
+    #     torch.save(model.state_dict(), 'results/linear_model.pth')
+
 
 transformed = dae.encode(torch.Tensor(flat_test_input[0:5000]).to(DEVICE)).detach().cpu().numpy()
 display_2d_repr(transformed, test_labels, "images/dae_repr.png")
