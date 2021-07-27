@@ -51,13 +51,13 @@ def display_output(v0, vk, dim1=96, dim2=32, v0_fname=None, vk_fname=None):
 
     """
     print("Original (top) and Reconstructed (bottom)")
-    img = make_grid(v0.view(v0.shape[0], 1, dim1, dim2).data)
+    img = make_grid(v0.view(v0.shape[0], 3, dim1, dim2).data)
     npimg = np.transpose(img.detach().cpu().numpy(), (1, 2, 0))
     plt.imshow(npimg)
     if v0_fname is not None:
         plt.savefig(v0_fname)
     plt.show()
-    img = make_grid(vk.view(vk.shape[0], 1, dim1, dim2).data)
+    img = make_grid(vk.view(vk.shape[0], 3, dim1, dim2).data)
     npimg = np.transpose(img.detach().cpu().numpy(), (1, 2, 0))
     plt.imshow(npimg)
     if vk_fname is not None:
