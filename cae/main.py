@@ -12,7 +12,7 @@ from torchvision import datasets, transforms
 
 from cae import ConvAutoencoder, ContrastiveLoss
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
 # convert data to torch.FloatTensor
 transform = transforms.ToTensor()
