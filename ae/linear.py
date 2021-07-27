@@ -27,7 +27,7 @@ class Net(nn.Module):
 
     def forward(self, x):
         # x = self.f(x)
-        x = self.f.encoder(x)
+        x = self.f.encode(x)
         feature = torch.flatten(x, start_dim=1)
         out = self.fc(feature)
         return out
