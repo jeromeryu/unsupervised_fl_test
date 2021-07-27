@@ -10,8 +10,8 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from cae import ConvAutoencoder, ContrastiveLoss
-from ..ae import utils
+from cae.cae import ConvAutoencoder, ContrastiveLoss
+import ae.utils
 
 device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
@@ -52,7 +52,7 @@ for epoch in range(num_epochs):
     running_loss = np.mean(losses)
     print(f'Epoch {epoch}: {running_loss}')
     if epoch % 10 == 9:
-        utils.display_output(data, out, 32, 32, '1.png', '2.png')
+        ae.utils.display_output(data, out, 32, 32, '1.png', '2.png')
 
 
 
