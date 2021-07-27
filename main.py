@@ -68,7 +68,7 @@ train_loader_linear = DataLoader(train_data, batch_size=batch_size, num_workers=
 test_loader_linear = DataLoader(test_data, batch_size=batch_size, num_workers=num_workers)
 
 linear_epoch = 100
-net = cae.linear.Net(num_class=len(train_loader_linear.classes), net = model).cuda()
+net = cae.linear.Net(num_class=len(train_data_linear.classes), net = model).cuda()
 for param in net.f.parameters():
     param.requires_grad = False
 optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
