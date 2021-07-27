@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from cae import ConvAutoencoder, ContrastiveLoss
-from ae import utils
+from ..ae import utils
 
 device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
