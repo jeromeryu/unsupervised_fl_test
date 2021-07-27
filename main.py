@@ -25,7 +25,7 @@ test_data = datasets.CIFAR10(root='data', train=False,
                                   download=True, transform=transform)
 num_workers = 0
 # how many samples per batch to load
-batch_size = 20
+batch_size = 64
 
 # prepare data loaders
 train_loader = DataLoader(train_data, batch_size=batch_size, num_workers=num_workers)
@@ -52,7 +52,7 @@ for epoch in range(num_epochs):
     running_loss = np.mean(losses)
     print(f'Epoch {epoch}: {running_loss}')
     if epoch % 10 == 9:
-        ae.utils.display_output(data, out, 32, 32, '1.png', '2.png')
+        ae.utils.display_output(data, out, 32, 32, '%d ori.png'.format(epoch/10), '%d recon.png'.format(epoch/10))
 
 
 
