@@ -21,7 +21,7 @@ class Net(nn.Module):
         # encoder
         self.f = net
         # classifier
-        self.fc = nn.Linear(30, num_class, bias=True)
+        self.fc = nn.Linear(1024, num_class, bias=True)
         # self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
         # self.load_state_dict(net, strict=False)
 
