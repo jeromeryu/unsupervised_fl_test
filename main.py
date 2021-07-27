@@ -19,9 +19,9 @@ device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 transform = transforms.ToTensor()
 
 # load the training and test datasets
-train_data = datasets.CIFAR10(root='../data', train=True,
+train_data = datasets.CIFAR10(root='data', train=True,
                                    download=True, transform=transform)
-test_data = datasets.CIFAR10(root='../data', train=False,
+test_data = datasets.CIFAR10(root='data', train=False,
                                   download=True, transform=transform)
 num_workers = 0
 # how many samples per batch to load
