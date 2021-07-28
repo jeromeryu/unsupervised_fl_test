@@ -32,7 +32,7 @@ class Net(nn.Module):
 
 
 # train or test for one epoch
-def train_val(net, data_loader, train_optimizer):
+def train_val(net, data_loader, train_optimizer, device):
     loss_criterion = nn.CrossEntropyLoss()
     is_train = train_optimizer is not None
     net.train() if is_train else net.eval()
@@ -42,9 +42,9 @@ def train_val(net, data_loader, train_optimizer):
         for data, target in data_loader:
             # data = data.view(-1, 1024 * 3).detach().cpu().numpy()
             # data = torch.Tensor(data).cuda()
-            data = data.cuda()
+            data = data.to(device)
             # data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
-            target = target.cuda(non_blocking=True)
+            target = target.to(device)
             out = net(data)
             loss = loss_criterion(out, target)
 

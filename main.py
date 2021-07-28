@@ -137,11 +137,11 @@ if __name__=='__main__':
         os.mkdir('results')
 
     for epoch in range(1, args.linear_epochs + 1):
-        train_loss, train_acc_1, train_acc_5 = cae.linear.train_val(net, train_loader_linear, optimizer)
+        train_loss, train_acc_1, train_acc_5 = cae.linear.train_val(net, train_loader_linear, optimizer, device)
         results['train_loss'].append(train_loss)
         results['train_acc@1'].append(train_acc_1)
         results['train_acc@5'].append(train_acc_5)
-        test_loss, test_acc_1, test_acc_5 = cae.linear.train_val(net, test_loader_linear, None)
+        test_loss, test_acc_1, test_acc_5 = cae.linear.train_val(net, test_loader_linear, None, device)
         results['test_loss'].append(test_loss)
         results['test_acc@1'].append(test_acc_1)
         results['test_acc@5'].append(test_acc_5)
