@@ -111,8 +111,8 @@ if __name__=='__main__':
             w = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))
     
-    global_weights = average_weights(local_weights)
-    global_model.load_state_dict(global_weights)
+        global_weights = average_weights(local_weights)
+        global_model.load_state_dict(global_weights)
 
 
 
