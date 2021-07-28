@@ -107,7 +107,7 @@ if __name__=='__main__':
         local_weights = []
         global_model.train()
         for i in range(args.num_users): #since fraction is 1
-            local_model = LocalModel(args, train_data, user_groups[i])
+            local_model = LocalModel(args, train_data, user_groups[i], device)
             w = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))
     
@@ -124,7 +124,7 @@ if __name__=='__main__':
     train_loader_linear = DataLoader(train_data, batch_size=args.batch_size)
     test_loader_linear = DataLoader(test_data, batch_size=args.batch_size)
 
-    net = cae.linear.Net(num_class=len(train_data_linear.classes), net = global_model).cuda()
+    net = cae.linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
     for param in net.f.parameters():
         param.requires_grad = False
     optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)

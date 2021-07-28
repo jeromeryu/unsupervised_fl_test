@@ -22,10 +22,11 @@ class DatasetSplit(Dataset):
 
 
 class LocalModel(object):
-    def __init__(self, args, dataset, idxs):
+    def __init__(self, args, dataset, idxs, device):
         self.args = args
         self.dataset = DatasetSplit(dataset, idxs)
         self.idxs = idxs
+        self.device = device
         self.trainloader = DataLoader(self.dataset,
             batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
 
@@ -36,7 +37,7 @@ class LocalModel(object):
         for iter in range(self.args.local_epochs):
             total_loss, total_num = 0.0, 0
             for data, target in self.trainloader:
-                data = data.cuda()
+                data = data.to(self.device)
                 out = net(data)
                 batch_loss = loss(data, out)
                 optimizer.zero_grad()
