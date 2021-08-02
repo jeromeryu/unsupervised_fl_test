@@ -33,6 +33,7 @@ class Net(nn.Module):
 # train or test for one epoch
 def train_val(net, data_loader, train_optimizer):
     is_train = train_optimizer is not None
+    loss_criterion = nn.CrossEntropyLoss()
     net.train() if is_train else net.eval()
 
     total_loss, total_correct_1, total_correct_5, total_num, data_bar = 0.0, 0.0, 0.0, 0, tqdm(data_loader)
