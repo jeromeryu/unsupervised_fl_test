@@ -14,17 +14,17 @@ from model import Model
 
 
 class Net(nn.Module):
-    def __init__(self, num_class, pretrained_path):
+    def __init__(self, num_class, net):
         super(Net, self).__init__()
 
         # encoder
-        self.f = Model().f
+        self.f = net
         # classifier
         self.fc = nn.Linear(2048, num_class, bias=True)
-        self.load_state_dict(torch.load(pretrained_path, map_location='cpu'), strict=False)
+        
 
     def forward(self, x):
-        x = self.f(x)
+        x = self.f.f(x)
         feature = torch.flatten(x, start_dim=1)
         out = self.fc(feature)
         return out
