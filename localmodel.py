@@ -31,7 +31,7 @@ class LocalModel(object):
             batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
 
     def train(self, net):
-        loss = nn.MSELoss()
+        loss = nn.TripletMarginLoss()
         optimizer = optim.Adam(net.parameters(), lr = self.args.lr, weight_decay=self.args.weight_decay)
         net.train()
         for iter in range(self.args.local_epochs):
