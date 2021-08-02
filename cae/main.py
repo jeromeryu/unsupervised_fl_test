@@ -71,7 +71,7 @@ if __name__=='__main__':
     train_data = datasets.CIFAR10(root='data', train=True,
                                     download=True, transform=transform)
     test_data = datasets.CIFAR10(root='data', train=False,
-                                    download=True, transform=transform)\
+                                    download=True, transform=transform)
 
     # prepare data loaders
     # train_loader = DataLoader(train_data, batch_size=batch_size, num_workers=num_workers)
@@ -121,8 +121,8 @@ if __name__=='__main__':
     test_data_linear = datasets.CIFAR10(root='data', train=False,
                                     download=True, transform=transform)
 
-    train_loader_linear = DataLoader(train_data, batch_size=args.batch_size)
-    test_loader_linear = DataLoader(test_data, batch_size=args.batch_size)
+    train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
+    test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
 
     net = cae.linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
     for param in net.f.parameters():
