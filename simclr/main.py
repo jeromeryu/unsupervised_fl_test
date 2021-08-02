@@ -12,6 +12,7 @@ from model import Model
 import copy
 import linear
 from torchvision import datasets
+import numpy as np
 
 
 def cifar_iid(dataset, num_users):
