@@ -162,14 +162,12 @@ if __name__ == '__main__':
     # training loop
     results = {'train_loss': [], 'test_acc@1': [], 'test_acc@5': []}
     save_name_pre = '{}_{}_{}_{}_{}'.format(feature_dim, temperature, k, batch_size, epochs)
-    if not os.path.exists('results'):
-        os.mkdir('results')
     best_acc = 0.0
     
     user_groups = cifar_iid(train_data, args.num_users)
 
     
-    for epoch in range(1, epochs + 1):
+    for epoch in tqdm(range(1, epochs + 1)):
         local_weights = []
         global_model.train()
         for i in range(args.num_users):
@@ -184,9 +182,9 @@ if __name__ == '__main__':
 
  
 
-    train_data_linear = datasets.CIFAR10(root='data', train=True,
+    train_data_linear = datasets.CIFAR10(root='../data', train=True,
                                     download=True, transform=utils.train_transform)
-    test_data_linear = datasets.CIFAR10(root='data', train=False,
+    test_data_linear = datasets.CIFAR10(root='../data', train=False,
                                     download=True, transform=utils.test_transform)
 
     train_loader_linear = DataLoader(train_data, batch_size=args.batch_size)
