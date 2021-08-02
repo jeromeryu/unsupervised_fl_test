@@ -173,6 +173,7 @@ if __name__ == '__main__':
         for i in range(args.num_users):
             local_model = LocalModel(args, train_data, user_groups[i], device)
             w = local_model.train(net = copy.deepcopy(global_model))
+            local_weights.append(copy.deepcopy(w))
         global_weights = average_weights(local_weights)
         global_model.load_state_dict(global_weights)
        
