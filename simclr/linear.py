@@ -54,9 +54,9 @@ def train_val(net, data_loader, train_optimizer):
             total_correct_1 += torch.sum((prediction[:, 0:1] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
             total_correct_5 += torch.sum((prediction[:, 0:5] == target.unsqueeze(dim=-1)).any(dim=-1).float()).item()
 
-            data_bar.set_description('{} Epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}% ACC@5: {:.2f}%'
-                                     .format('Train' if is_train else 'Test', epoch, epochs, total_loss / total_num,
-                                             total_correct_1 / total_num * 100, total_correct_5 / total_num * 100))
+            # data_bar.set_description('{} Epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}% ACC@5: {:.2f}%'
+            #                          .format('Train' if is_train else 'Test', epoch, epochs, total_loss / total_num,
+            #                                  total_correct_1 / total_num * 100, total_correct_5 / total_num * 100))
 
     return total_loss / total_num, total_correct_1 / total_num * 100, total_correct_5 / total_num * 100
 
