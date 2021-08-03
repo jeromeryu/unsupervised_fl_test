@@ -190,7 +190,8 @@ if __name__ == '__main__':
 
     train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
     test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
-
+    print("train", len(train_data_linear))
+    print("test", len(test_data_linear))
 
 
 
