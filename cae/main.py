@@ -124,7 +124,7 @@ if __name__=='__main__':
     train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
     test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
 
-    net = cae.linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
+    net = linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
     for param in net.f.parameters():
         param.requires_grad = False
     optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
@@ -137,11 +137,11 @@ if __name__=='__main__':
         os.mkdir('results')
 
     for epoch in range(1, args.linear_epochs + 1):
-        train_loss, train_acc_1, train_acc_5 = cae.linear.train_val(net, train_loader_linear, optimizer, device)
+        train_loss, train_acc_1, train_acc_5 = linear.train_val(net, train_loader_linear, optimizer, device)
         results['train_loss'].append(train_loss)
         results['train_acc@1'].append(train_acc_1)
         results['train_acc@5'].append(train_acc_5)
-        test_loss, test_acc_1, test_acc_5 = cae.linear.train_val(net, test_loader_linear, None, device)
+        test_loss, test_acc_1, test_acc_5 = linear.train_val(net, test_loader_linear, None, device)
         results['test_loss'].append(test_loss)
         results['test_acc@1'].append(test_acc_1)
         results['test_acc@5'].append(test_acc_5)
