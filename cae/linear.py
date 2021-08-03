@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 # import utils
 # from model import Model
-from cae.cae import ConvAutoencoder
+from cae import ConvAutoencoder
 # import main
 
 class Net(nn.Module):
