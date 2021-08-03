@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader, Dataset
 import torch.optim as optim
 import tqdm
 import torch.nn as nn
+import torch
 
 class DatasetSplit(Dataset):
     """An abstract Dataset class wrapped around Pytorch Dataset class.
@@ -32,7 +33,7 @@ class LocalModel(object):
 
     def train(self, net):
         # loss = nn.TripletMarginLoss()
-        loss = nn.KLDivLoss()
+        # loss = nn.KLDivLoss()
         optimizer = optim.Adam(net.parameters(), lr = self.args.lr, weight_decay=self.args.weight_decay)
         net.train()
         for iter in range(self.args.local_epochs):
@@ -40,8 +41,20 @@ class LocalModel(object):
             for data, target in self.trainloader:
                 data = data.to(self.device)
                 out = net(data)
-                batch_loss = loss(data, out)    
+                
+                outcat = torch.cat([data, out], dim = 0)
+                sim_matrix = torch.exp(torch.mm(outcat, outcat.t().contiguous()) / 0.5)
+                mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
+                sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
+                pos_sim = torch.exp(torch.sum(data * out, dim=-1) / 0.5)
+                pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
+                loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
                 optimizer.zero_grad()
-                batch_loss.backward()
+                loss.backward()
                 optimizer.step()
+                
+                # batch_loss = loss(data, out)
+                # optimizer.zero_grad()
+                # batch_loss.backward()
+                # optimizer.step()
         return net.state_dict()

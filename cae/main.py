@@ -11,9 +11,9 @@ import pandas as pd
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from cae.cae import ConvAutoencoder, ContrastiveLoss
-import ae.utils
-import cae.linear 
+from cae import ConvAutoencoder, ContrastiveLoss
+# import ae.utils
+import linear 
 import os
 from tqdm import tqdm
 import argparse

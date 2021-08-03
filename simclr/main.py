@@ -180,9 +180,7 @@ if __name__ == '__main__':
     results = {'train_loss': [], 'train_acc@1': [], 'train_acc@5': [],
             'test_loss': [], 'test_acc@1': [], 'test_acc@5': []}
  
-
  
-
     train_data_linear = datasets.CIFAR10(root='../data', train=True,
                                     download=True, transform=utils.train_transform)
     test_data_linear = datasets.CIFAR10(root='../data', train=False,
@@ -190,10 +188,6 @@ if __name__ == '__main__':
 
     train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
     test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
-    print("train", len(train_data_linear))
-    print("test", len(test_data_linear))
-
-
 
     net = linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
     for param in net.f.parameters():
