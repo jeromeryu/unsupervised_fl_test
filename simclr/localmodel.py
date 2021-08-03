@@ -43,6 +43,7 @@ class LocalModel(object):
                 feature_2, out_2 = net(pos_2)
                 # [2*B, D]
                 out = torch.cat([out_1, out_2], dim=0)
+                print(out)
                 # [2*B, 2*B]
                 sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
                 mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
