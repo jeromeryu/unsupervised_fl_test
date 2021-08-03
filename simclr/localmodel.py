@@ -42,6 +42,8 @@ class LocalModel(object):
                 feature_1, out_1 = net(pos_1)
                 feature_2, out_2 = net(pos_2)
                 # [2*B, D]
+                print(out_1)
+                print(out_1.shape)
                 out = torch.cat([out_1, out_2], dim=0)
                 print(out)
                 # [2*B, 2*B]
