@@ -68,9 +68,9 @@ if __name__=='__main__':
     transform = transforms.ToTensor()
 
     # load the training and test datasets
-    train_data = datasets.CIFAR10(root='data', train=True,
+    train_data = datasets.CIFAR10(root='../data', train=True,
                                     download=True, transform=transform)
-    test_data = datasets.CIFAR10(root='data', train=False,
+    test_data = datasets.CIFAR10(root='../data', train=False,
                                     download=True, transform=transform)
 
     # prepare data loaders
@@ -116,9 +116,9 @@ if __name__=='__main__':
 
 
 
-    train_data_linear = datasets.CIFAR10(root='data', train=True,
+    train_data_linear = datasets.CIFAR10(root='../data', train=True,
                                     download=True, transform=transform)
-    test_data_linear = datasets.CIFAR10(root='data', train=False,
+    test_data_linear = datasets.CIFAR10(root='../data', train=False,
                                     download=True, transform=transform)
 
     train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
@@ -150,7 +150,7 @@ if __name__=='__main__':
 
         # save statistics
         data_frame = pd.DataFrame(data=results, index=range(1, epoch + 1))
-        data_frame.to_csv('results/fedae_linear_statistics.csv', index_label='epoch')
+        data_frame.to_csv('../results/fedae_linear_statistics.csv', index_label='epoch')
         # if test_acc_1 > best_acc:
         #     best_acc = test_acc_1
         #     torch.save(model.state_dict(), 'results/linear_model.pth')
