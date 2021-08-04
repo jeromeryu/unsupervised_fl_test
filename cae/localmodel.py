@@ -49,7 +49,7 @@ class LocalModel(object):
                 data = torch.flatten(data, start_dim=1)
                 out = torch.flatten(out, start_dim=1)
                 
-                # print('data1',data)
+                print('out', out)
                 data = torch.sub(data, 0.5)
                 out = torch.sub(out, 0.5)
                 print('data2',data)
