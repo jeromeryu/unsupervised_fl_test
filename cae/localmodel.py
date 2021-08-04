@@ -50,8 +50,8 @@ class LocalModel(object):
                 out = torch.flatten(out, start_dim=1)
                 
                 print('data1',data)
-                torch.sub(data, 0.5)
-                torch.sub(out, 0.5)
+                data = torch.sub(data, 0.5)
+                out = torch.sub(out, 0.5)
                 print('data2',data)
                 outcat = torch.cat([data, out], dim = 0)
                 print('outcat',outcat)
