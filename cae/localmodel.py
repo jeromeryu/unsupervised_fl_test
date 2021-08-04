@@ -48,9 +48,11 @@ class LocalModel(object):
 
                 data = torch.flatten(data, start_dim=1)
                 out = torch.flatten(out, start_dim=1)
+                
+                print('data1',data)
                 torch.sub(data, 0.5)
                 torch.sub(out, 0.5)
-                print('data',data)
+                print('data2',data)
                 outcat = torch.cat([data, out], dim = 0)
                 print('outcat',outcat)
                 sim_matrix = torch.exp(torch.mm(outcat, outcat.t().contiguous()) / 0.5)
