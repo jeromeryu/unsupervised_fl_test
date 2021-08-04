@@ -48,7 +48,9 @@ class LocalModel(object):
 
                 data = torch.flatten(data, start_dim=1)
                 out = torch.flatten(out, start_dim=1)
-                print(data)
+                torch.sub(data, 0.5)
+                torch.sub(out, 0.5)
+                # print(data)
                 outcat = torch.cat([data, out], dim = 0)
                 sim_matrix = torch.exp(torch.mm(outcat, outcat.t().contiguous()) / 0.5)
                 mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
