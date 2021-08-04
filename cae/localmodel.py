@@ -42,7 +42,9 @@ class LocalModel(object):
                 data = data.to(self.device)
                 target = target.to(self.device)
                 out = net(data)
-
+                print(data)
+                print(data.shape)
+                print(out.shape)
 
                 # outcat = torch.cat([torch.flatten(data), torch.flatten(out)], dim = 0)
                 # sim_matrix = torch.exp(torch.mm(outcat, outcat.t().contiguous()) / 0.5)
