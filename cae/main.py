@@ -125,7 +125,7 @@ if __name__=='__main__':
             best_epoch = epoch
             best_model = copy.deepcopy(global_model)
     
-        bar.set_description('Mean Loss : {}'.format(loss))    
+        bar.set_description('Mean Loss: {}, best epoch: {}, best mloss: {}'.format(loss, best_epoch, best_loss))    
 
 
 
