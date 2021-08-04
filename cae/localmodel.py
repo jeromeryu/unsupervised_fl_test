@@ -48,6 +48,7 @@ class LocalModel(object):
 
                 data = torch.flatten(data, start_dim=1)
                 out = torch.flatten(out, start_dim=1)
+                print(data)
                 outcat = torch.cat([data, out], dim = 0)
                 sim_matrix = torch.exp(torch.mm(outcat, outcat.t().contiguous()) / 0.5)
                 mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
@@ -59,13 +60,10 @@ class LocalModel(object):
                 loss.backward()
                 optimizer.step()
                 
-                print(loss)
                 
                 total_num += self.args.batch_size
                 total_loss += loss.item() * self.args.batch_size
-                print(total_num)
-                print(total_loss)
-                print(total_loss/total_num)
+
                 # batch_loss = loss(data, out)
                 # optimizer.zero_grad()
                 # batch_loss.backward()
