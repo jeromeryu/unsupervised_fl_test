@@ -104,6 +104,9 @@ if __name__=='__main__':
 
     global_model = ConvAutoencoder().to(device)
     bar = tqdm(range(args.epochs))
+    best_loss = 100000
+    best_epoch = 0
+    best_model = 0
     for epoch in bar:
         local_weights = []
         global_model.train()
@@ -114,11 +117,15 @@ if __name__=='__main__':
             local_weights.append(copy.deepcopy(w))
             loss += l
         loss = loss / args.num_users
-        
-        bar.set_description('Mean Loss : {}'.format(loss))
-        
+            
         global_weights = average_weights(local_weights)
         global_model.load_state_dict(global_weights)
+        if loss < best_loss:
+            best_loss = loss
+            best_epoch = epoch
+            best_model = copy.deepcopy(global_model)
+    
+        bar.set_description('Mean Loss : {}'.format(loss))    
 
 
 
@@ -130,7 +137,7 @@ if __name__=='__main__':
     train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
     test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
 
-    net = linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
+    net = linear.Net(num_class=len(train_data_linear.classes), net = best_model).to(device)
     for param in net.f.parameters():
         param.requires_grad = False
     optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
