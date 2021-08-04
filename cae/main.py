@@ -112,7 +112,6 @@ if __name__=='__main__':
             local_model = LocalModel(args, train_data, user_groups[i], device)
             w, l = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))
-            print(l)
             loss += l
         loss = loss / args.num_users
         
