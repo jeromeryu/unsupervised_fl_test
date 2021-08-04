@@ -103,14 +103,20 @@ if __name__=='__main__':
 
 
     global_model = ConvAutoencoder().to(device)
-    for epoch in tqdm(range(args.epochs)):
+    bar = tqdm(range(args.epochs))
+    for epoch in bar:
         local_weights = []
         global_model.train()
+        loss = 0
         for i in range(args.num_users): #since fraction is 1
             local_model = LocalModel(args, train_data, user_groups[i], device)
-            w = local_model.train(net = copy.deepcopy(global_model))
+            w, l = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))
-    
+            loss += l
+        loss = loss / args.num_users
+        
+        bar.set_description('Mean Loss : {}'.format(loss))
+        
         global_weights = average_weights(local_weights)
         global_model.load_state_dict(global_weights)
 

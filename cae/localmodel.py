@@ -59,8 +59,10 @@ class LocalModel(object):
                 loss.backward()
                 optimizer.step()
                 
+                total_num += self.args.batch_size
+                total_loss += loss.item() * self.args.batch_size
                 # batch_loss = loss(data, out)
                 # optimizer.zero_grad()
                 # batch_loss.backward()
                 # optimizer.step()
-        return net.state_dict()
+        return net.state_dict(), total_loss/total_num
