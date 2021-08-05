@@ -57,7 +57,7 @@ if __name__=='__main__':
     parser.add_argument('--local_epochs', type=int, default=5)
     parser.add_argument('--linear_epochs', type=int, default=100)
     parser.add_argument('--num_users', type=int, default=10)
-    parser.add_argument('--fraction', type=float, default=0.1)
+    parser.add_argument('--fraction', type=float, default=1)
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=1e-6)
     parser.add_argument('--batch_size', type=int, default=128)
@@ -110,7 +110,7 @@ if __name__=='__main__':
     for epoch in bar:
         local_weights = []
         global_model.train()
-        m = max(int(args.frac * args.num_users), 1)
+        m = max(int(args.fraction * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
         loss = 0
