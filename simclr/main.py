@@ -170,7 +170,11 @@ if __name__ == '__main__':
     for epoch in tqdm(range(1, epochs + 1)):
         local_weights = []
         global_model.train()
-        for i in range(args.num_users):
+
+        m = max(int(args.frac * args.num_users), 1)
+        idxs_users = np.random.choice(range(args.num_users), m, replace=False)
+
+        for i in idxs_users:
             local_model = LocalModel(args, train_data, user_groups[i], device)
             w = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))

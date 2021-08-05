@@ -110,8 +110,11 @@ if __name__=='__main__':
     for epoch in bar:
         local_weights = []
         global_model.train()
+        m = max(int(args.frac * args.num_users), 1)
+        idxs_users = np.random.choice(range(args.num_users), m, replace=False)
+
         loss = 0
-        for i in range(args.num_users): #since fraction is 1
+        for i in idxs_users: #since fraction is 1
             local_model = LocalModel(args, train_data, user_groups[i], device)
             w, l = local_model.train(net = copy.deepcopy(global_model))
             local_weights.append(copy.deepcopy(w))
