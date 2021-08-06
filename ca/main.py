@@ -119,7 +119,6 @@ if __name__=='__main__':
         
         # loss = loss / args.num_users
         global_dictionary = torch.cat(lst_dict, dim = 1)
-        print(global_dictionary.shape())
         
         global_weights = average_weights(local_weights)
         global_model.load_state_dict(global_weights)
