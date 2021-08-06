@@ -12,7 +12,7 @@ import pandas as pd
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-# import linear 
+import linear 
 import os
 from torchvision.transforms.transforms import ToTensor
 from tqdm import tqdm
@@ -125,3 +125,37 @@ if __name__=='__main__':
         global_model.load_state_dict(global_weights)
     
         bar.set_description('Mean Loss: {}'.format(loss))    
+
+    
+    train_data_linear = datasets.CIFAR10(root='../data', train=True,
+                                    download=True, transform=utils.train_transform)
+    test_data_linear = datasets.CIFAR10(root='../data', train=False,
+                                    download=True, transform=utils.test_transform)
+
+    train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
+    test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
+
+    net = linear.Net(num_class=len(train_data_linear.classes), net = global_model).to(device)
+    for param in net.f.parameters():
+        param.requires_grad = False
+    optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
+
+    
+    results = {'train_loss': [], 'train_acc@1': [], 'train_acc@5': [],
+            'test_loss': [], 'test_acc@1': [], 'test_acc@5': []}
+ 
+    for epoch in range(1, args.linear_epochs + 1):
+        train_loss, train_acc_1, train_acc_5 = linear.train_val(net, train_loader_linear, optimizer)
+        results['train_loss'].append(train_loss)
+        results['train_acc@1'].append(train_acc_1)
+        results['train_acc@5'].append(train_acc_5)
+        test_loss, test_acc_1, test_acc_5 = linear.train_val(net, test_loader_linear, None)
+        results['test_loss'].append(test_loss)
+        results['test_acc@1'].append(test_acc_1)
+        results['test_acc@5'].append(test_acc_5)
+        
+        print('{} : {} {} {}'.format(epoch, test_loss, test_acc_1, test_acc_5))
+
+        # save statistics
+        data_frame = pd.DataFrame(data=results, index=range(1, epoch + 1))
+        data_frame.to_csv('../results/fedca_linear_statistics.csv', index_label='epoch')
