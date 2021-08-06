@@ -72,6 +72,7 @@ class LocalModel(object):
                         loss_h += torch.vdot(h, h)
                         z = torch.norm(torch.sub(z_a, z_i), dim=1)
                         loss_z += torch.vdot(z, z)
+                        break
                     
                 a_idx += 1
                 if a_idx >= len(self.alignment_loader.dataset)/self.args.batch_size:
@@ -80,6 +81,7 @@ class LocalModel(object):
                 loss_a = loss_h + loss_z
                 loss = loss_c + self.args.beta * loss_a
                 
+                print("loss")
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
