@@ -81,7 +81,7 @@ class LocalModel(object):
                 loss_a = loss_h + loss_z
                 loss = loss_c + self.args.beta * loss_a
                 
-                print("loss")
+                print("loss", loss)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
