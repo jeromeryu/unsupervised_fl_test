@@ -66,6 +66,7 @@ class LocalModel(object):
                 
                 for chk, (pos, target) in enumerate(self.alignment_loader):
                     if chk==a_idx:
+                        pos = pos.to(self.device)
                         h_a, z_a = net(pos)
                         h = torch.norm(torch.sub(h_a, h_i), dim=1)
                         loss_h += torch.vdot(h, h)
