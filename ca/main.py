@@ -110,7 +110,6 @@ if __name__=='__main__':
         for i in idxs_users: #since fraction is 1
             # local_model = LocalModel(args, train_data, user_groups[i], device)
             local_model = clients[i]
-            print(global_dictionary.shape)
             w, dict_u, l = local_model.train(copy.deepcopy(global_model), global_dictionary, round)
             loss += l
             lst_dict += [dict_u]
