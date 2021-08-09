@@ -119,6 +119,7 @@ if __name__=='__main__':
         
         # loss = loss / args.num_users
         # print()
+        print(loss)
         g_d = torch.cat(lst_dict, dim = 0)
         
     #         dict_users, all_idxs = {}, [i for i in range(len(dataset))]
