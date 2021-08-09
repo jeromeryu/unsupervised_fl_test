@@ -119,7 +119,17 @@ if __name__=='__main__':
         loss = loss / len(idxs_users)
         
         # loss = loss / args.num_users
-        global_dictionary = torch.cat(lst_dict, dim = 1)
+        # print()
+        g_d = torch.cat(lst_dict, dim = 0)
+        
+    #         dict_users, all_idxs = {}, [i for i in range(len(dataset))]
+    # for i in range(num_users):
+    #     dict_users[i] = set(np.random.choice(all_idxs, num_items,
+    #                                          replace=False))
+        
+        global_idxs = set(np.random.choice([i for i in range(len(g_d))]), 1024, replace = False)
+        for idx, i in enumerate(global_idxs):
+            global_dictionary[idx] = g_d[i]
         
         global_weights = average_weights(local_weights)
         global_model.load_state_dict(global_weights)
