@@ -27,14 +27,12 @@ class LocalModel(object):
     def __init__(self, args, dataset, idxs, device, alignment_loader):
         self.args = args
         self.dataset = DatasetSplit(dataset, idxs)
-        print(len(dataset))
-        print(len(self.dataset))
         self.idxs = idxs
         self.device = device    
         self.trainloader = DataLoader(self.dataset,
             batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
-        self.z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # intermediate values
-        self.Z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # temporal outputs
+        self.z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # intermediate values
+        self.Z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # temporal outputs
         self.outputs = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device)   # current outputs
         self.alignment_model = Model(args.feature_dim).to(device)
         # self.alignment_dataset = alignment_dataset
@@ -68,19 +66,27 @@ class LocalModel(object):
                 loss_h = 0
                 loss_z = 0
                 
-                for chk, (pos, target) in enumerate(self.alignment_loader):
-                    if chk==a_idx:
-                        pos = pos.to(self.device)
-                        h_a, z_a = net(pos)
-                        h = torch.norm(torch.sub(h_a, h_i), dim=1)
-                        loss_h += torch.vdot(h, h)
-                        z = torch.norm(torch.sub(z_a, z_i), dim=1)
-                        loss_z += torch.vdot(z, z)
-                        break
+                pos, target = next(self.alignment_loader)
+                pos = pos.to(self.device)
+                h_a, z_a = net(pos)
+                h = torch.norm(torch.sub(h_a, h_i), dim=1)
+                loss_h += torch.vdot(h, h)
+                z = torch.norm(torch.sub(z_a, z_i), dim=1)
+                loss_z += torch.vdot(z, z)
+        
+                # for chk, (pos, target) in enumerate(self.alignment_loader):
+                    # if chk==a_idx:
+                        # pos = pos.to(self.device)
+                        # h_a, z_a = net(pos)
+                        # h = torch.norm(torch.sub(h_a, h_i), dim=1)
+                        # loss_h += torch.vdot(h, h)
+                        # z = torch.norm(torch.sub(z_a, z_i), dim=1)
+                        # loss_z += torch.vdot(z, z)
+                        # break
                     
-                a_idx += 1
-                if a_idx >= len(self.alignment_loader.dataset)/self.args.batch_size:
-                    a_idx = 0
+                # a_idx += 1
+                # if a_idx >= len(self.alignment_loader.dataset)/self.args.batch_size:
+                #     a_idx = 0
 
                 loss_a = loss_h + loss_z
                 loss = loss_c + self.args.beta * loss_a
@@ -90,7 +96,7 @@ class LocalModel(object):
                 loss.backward()
                 optimizer.step()
         
-        self.Z = self.args.alpha * self.Z + (1. - self.args.alpha) * self.outputs
+        self.Z = self.args.alpha * self.Z + (1. - self.args.alpha) * self.outputs[:1024]
         # self.z = self.Z * (1. / (1. - self.args.alpha ** (round + 1)))
         self.z = F.normalize(self.z, dim = 1) # 각각?
 
