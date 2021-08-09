@@ -55,11 +55,12 @@ class LocalModel(object):
                 #contrastive loss
                 self.outputs[i * self.args.batch_size: (i + 1) * self.args.batch_size] = z_i.data.clone()
                 logit_batch = torch.mm(z_i, torch.t(z_j))
-                print(torch.t(global_dict).shape)
                 logit_dict = torch.mm(z_i, torch.t(global_dict))
                 # labels = range(self.args.batch_size)
                 labels = torch.LongTensor(range(self.args.batch_size)).to(self.device)
                 logit_total = torch.cat([logit_batch, logit_dict], dim = 1).to(self.device)
+                print(logit_batch.shape, logit_dict.shape, logit_total)
+                
                 loss_c = criterion(logit_total, labels)
                 
                 loss_h = 0
