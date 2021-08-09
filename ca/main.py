@@ -127,7 +127,7 @@ if __name__=='__main__':
     #     dict_users[i] = set(np.random.choice(all_idxs, num_items,
     #                                          replace=False))
         
-        global_idxs = set(np.random.choice([i for i in range(len(g_d))]), 1024, replace = False)
+        global_idxs = set(np.random.choice([i for i in range(len(g_d))], 1024, replace = False))
         for idx, i in enumerate(global_idxs):
             global_dictionary[idx] = g_d[i]
         
