@@ -89,6 +89,7 @@ if __name__=='__main__':
 
     
     user_groups = cifar_iid(train_data, args.num_users)
+    print(user_groups)
 
     global_model = Model(args.feature_dim).to(device)
     global_dictionary = torch.zeros(1024, args.feature_dim).float().to(device)

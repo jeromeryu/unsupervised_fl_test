@@ -30,9 +30,9 @@ class LocalModel(object):
         self.device = device    
         self.trainloader = DataLoader(self.dataset,
             batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
-        self.z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # intermediate values
-        self.Z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # temporal outputs
-        self.outputs = torch.zeros(1024, self.args.feature_dim).float().to(self.device)   # current outputs
+        self.z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # intermediate values
+        self.Z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # temporal outputs
+        self.outputs = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device)   # current outputs
         self.alignment_model = Model(args.feature_dim).to(device)
         # self.alignment_dataset = alignment_dataset
         self.alignment_loader = alignment_loader
@@ -88,7 +88,7 @@ class LocalModel(object):
                 optimizer.step()
         
         self.Z = self.args.alpha * self.Z + (1. - self.args.alpha) * self.outputs
-        self.z = self.Z * (1. / (1. - self.args.alpha ** (round + 1)))
+        # self.z = self.Z * (1. / (1. - self.args.alpha ** (round + 1)))
         self.z = F.normalize(self.z, dim = 1) # 각각?
 
         return net.state_dict(), self.z, loss
