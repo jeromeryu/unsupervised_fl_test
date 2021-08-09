@@ -51,7 +51,7 @@ class LocalModel(object):
                 pos_1, pos_2 = pos_1.to(self.device), pos_2.to(self.device)
                 h_i, z_i = net(pos_1)
                 h_j, z_j = net(pos_2)
-                
+                print(z_i.shape)
                 #contrastive loss
                 self.outputs[i * self.args.batch_size: (i + 1) * self.args.batch_size] = z_i.data.clone()
                 logit_batch = torch.mm(z_i, torch.t(z_j))
