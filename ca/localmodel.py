@@ -38,7 +38,6 @@ class LocalModel(object):
         self.alignment_model = Model(args.feature_dim).to(device)
         # self.alignment_dataset = alignment_dataset
         self.alignment_loader = alignment_loader
-        self.alignment_it = iter(self.alignment_loader)
 
 
     def train(self, net, global_dict, round):
@@ -50,7 +49,9 @@ class LocalModel(object):
         total_loss, total_num, train_bar = 0.0, 0, self.trainloader
         a_idx = 0
         
-        for iter in range(self.args.local_epochs):
+        it = iter(self.alignment_loader)
+        
+        for i in range(self.args.local_epochs):
             total_loss, total_num = 0.0, 0
             for i, (pos_1, pos_2, target) in enumerate(train_bar):
                 pos_1, pos_2 = pos_1.to(self.device), pos_2.to(self.device)
@@ -71,10 +72,11 @@ class LocalModel(object):
                 loss_z = 0
                 
                 try:
-                    pos, target = next(self.alignment_it)
+                    pos, target = next(it)
                 except StopIteration:
-                    self.alignment_it = iter(self.alignment_loader)
-                    pos, target = next(self.alignment_it)
+                    it = iter(self.alignment_loader)
+                    pos, target = next(it)
+                    
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
