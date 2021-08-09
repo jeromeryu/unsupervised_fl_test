@@ -46,6 +46,8 @@ class LocalModel(object):
         net.train()
         total_loss, total_num, train_bar = 0.0, 0, self.trainloader
         a_idx = 0
+        it = iter(self.alignment_loader)
+        
         for iter in range(self.args.local_epochs):
             total_loss, total_num = 0.0, 0
             for i, (pos_1, pos_2, target) in enumerate(train_bar):
@@ -66,7 +68,7 @@ class LocalModel(object):
                 loss_h = 0
                 loss_z = 0
                 
-                pos, target = next(self.alignment_loader)
+                pos, target = next()
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
