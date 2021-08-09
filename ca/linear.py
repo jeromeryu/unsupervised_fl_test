@@ -31,7 +31,7 @@ class Net(nn.Module):
 
 
 # train or test for one epoch
-def train_val(net, data_loader, train_optimizer):
+def train_val(net, data_loader, train_optimizer, device):
     is_train = train_optimizer is not None
     loss_criterion = nn.CrossEntropyLoss()
     net.train() if is_train else net.eval()
@@ -39,7 +39,7 @@ def train_val(net, data_loader, train_optimizer):
     total_loss, total_correct_1, total_correct_5, total_num, data_bar = 0.0, 0.0, 0.0, 0, tqdm(data_loader)
     with (torch.enable_grad() if is_train else torch.no_grad()):
         for data, target in data_bar:
-            data, target = data.cuda(non_blocking=True), target.cuda(non_blocking=True)
+            data, target = data.to(device), target.to(device)
             out = net(data)
             loss = loss_criterion(out, target)
 
