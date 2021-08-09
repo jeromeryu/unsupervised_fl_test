@@ -58,7 +58,7 @@ if __name__=='__main__':
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--local_epochs', type=int, default=5)
     parser.add_argument('--linear_epochs', type=int, default=100)
-    parser.add_argument('--num_users', type=int, default=10)
+    parser.add_argument('--num_users', type=int, default=5)
     parser.add_argument('--fraction', type=float, default=1)
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=1e-6)
