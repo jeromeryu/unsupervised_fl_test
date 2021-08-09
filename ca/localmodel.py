@@ -1,4 +1,5 @@
 from torch import functional, jit
+from torch.utils import data
 from torch.utils.data import DataLoader, Dataset
 import torch.optim as optim
 import tqdm
@@ -26,6 +27,8 @@ class LocalModel(object):
     def __init__(self, args, dataset, idxs, device, alignment_loader):
         self.args = args
         self.dataset = DatasetSplit(dataset, idxs)
+        print(len(dataset))
+        print(len(self.dataset))
         self.idxs = idxs
         self.device = device    
         self.trainloader = DataLoader(self.dataset,
