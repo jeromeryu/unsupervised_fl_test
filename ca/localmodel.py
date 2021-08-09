@@ -66,7 +66,7 @@ class LocalModel(object):
                 logit_total = torch.cat([logit_batch, logit_dict], dim = 1).to(self.device)
                 # print(logit_batch.shape, logit_dict.shape, logit_total.shape)
                 
-                loss_c = criterion(logit_total, labels)
+                loss_c = criterion(torch.div(logit_total, self.args.temperature), labels)
                 
                 loss_h = 0
                 loss_z = 0

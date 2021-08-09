@@ -68,6 +68,7 @@ if __name__=='__main__':
     parser.add_argument('--beta', type=float, default=0.01)
     parser.add_argument('--feature_dim', type=int, default=128)
     parser.add_argument('--num_alignment_sample', type=int, default=3200)
+    parser.add_argument('--temperature', type=float, default=0.5)
 
     args = parser.parse_args()
 
