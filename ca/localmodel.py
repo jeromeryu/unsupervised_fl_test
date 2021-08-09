@@ -37,7 +37,8 @@ class LocalModel(object):
         self.outputs = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device)   # current outputs
         self.alignment_model = Model(args.feature_dim).to(device)
         # self.alignment_dataset = alignment_dataset
-        self.alignment_loader = alignment_loader
+        self.alignment_loader = iter(alignment_loader)
+
 
     def train(self, net, global_dict, round):
         optimizer = optim.Adam(net.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
@@ -47,8 +48,6 @@ class LocalModel(object):
         net.train()
         total_loss, total_num, train_bar = 0.0, 0, self.trainloader
         a_idx = 0
-        
-        it = itertools(self.alignment_loader)
         
         for iter in range(self.args.local_epochs):
             total_loss, total_num = 0.0, 0
@@ -70,7 +69,7 @@ class LocalModel(object):
                 loss_h = 0
                 loss_z = 0
                 
-                pos, target = next(it)
+                pos, target = next(self.alignment_loader)
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
