@@ -30,9 +30,9 @@ class LocalModel(object):
         self.device = device    
         self.trainloader = DataLoader(self.dataset,
             batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
-        self.z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # intermediate values
-        self.Z = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device) # temporal outputs
-        self.outputs = torch.zeros(len(self.dataset), self.args.feature_dim).float().to(self.device)   # current outputs
+        self.z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # intermediate values
+        self.Z = torch.zeros(1024, self.args.feature_dim).float().to(self.device) # temporal outputs
+        self.outputs = torch.zeros(1024, self.args.feature_dim).float().to(self.device)   # current outputs
         self.alignment_model = Model(args.feature_dim).to(device)
         # self.alignment_dataset = alignment_dataset
         self.alignment_loader = alignment_loader
@@ -51,7 +51,6 @@ class LocalModel(object):
                 pos_1, pos_2 = pos_1.to(self.device), pos_2.to(self.device)
                 h_i, z_i = net(pos_1)
                 h_j, z_j = net(pos_2)
-                print(z_i.shape)
                 #contrastive loss
                 self.outputs[i * self.args.batch_size: (i + 1) * self.args.batch_size] = z_i.data.clone()
                 logit_batch = torch.mm(z_i, torch.t(z_j))
