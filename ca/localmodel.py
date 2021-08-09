@@ -62,7 +62,7 @@ class LocalModel(object):
                 # labels = range(self.args.batch_size)
                 labels = torch.LongTensor(range(self.args.batch_size)).to(self.device)
                 logit_total = torch.cat([logit_batch, logit_dict], dim = 1).to(self.device)
-                print(logit_batch.shape, logit_dict.shape, logit_total.shape)
+                # print(logit_batch.shape, logit_dict.shape, logit_total.shape)
                 
                 loss_c = criterion(logit_total, labels)
                 
@@ -94,7 +94,7 @@ class LocalModel(object):
                 loss_a = loss_h + loss_z
                 loss = loss_c + self.args.beta * loss_a
                 
-                print("loss", loss)
+                # print("loss", loss)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
