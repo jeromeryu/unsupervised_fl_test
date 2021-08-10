@@ -81,8 +81,10 @@ class LocalModel(object):
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
+                print('h',h)
                 loss_h += torch.vdot(h, h)
                 z = torch.norm(torch.sub(z_a, z_i), dim=1)
+                print('z',z)
                 loss_z += torch.vdot(z, z)
         
                 # for chk, (pos, target) in enumerate(self.alignment_loader):
