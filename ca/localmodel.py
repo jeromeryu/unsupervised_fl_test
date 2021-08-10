@@ -43,7 +43,7 @@ class LocalModel(object):
         optimizer = optim.Adam(self.alignment_model.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
         self.alignment_model.train()
         
-        for it in tqdm(range(self.args.epochs)):
+        for it in tqdm(range(100)):
             for pos_1, pos_2, target in self.alignment_loader:
                 pos_1, pos_2 = pos_1.cuda(non_blocking=True), pos_2.cuda(non_blocking=True)
                 feature_1, out_1 = self.alignment_model(pos_1)
