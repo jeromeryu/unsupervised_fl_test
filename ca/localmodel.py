@@ -76,9 +76,14 @@ class LocalModel(object):
                 except StopIteration:
                     it = iter(self.alignment_loader)
                     pos, target = next(it)
+                
+                print(pos.shape)
+                
                     
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
+                print(z_a.shape)
+                print(z_i.shape)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
                 loss_h += torch.vdot(h, h)
                 z = torch.norm(torch.sub(z_a, z_i), dim=1)
