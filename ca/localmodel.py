@@ -77,13 +77,9 @@ class LocalModel(object):
                     it = iter(self.alignment_loader)
                     pos, target = next(it)
                 
-                print(pos.shape)
-                
                     
                 pos = pos.to(self.device)
                 h_a, z_a = net(pos)
-                print(z_a.shape)
-                print(z_i.shape)
                 h = torch.norm(torch.sub(h_a, h_i), dim=1)
                 loss_h += torch.vdot(h, h)
                 z = torch.norm(torch.sub(z_a, z_i), dim=1)
@@ -106,6 +102,8 @@ class LocalModel(object):
                 loss_a = loss_h + loss_z
                 loss = loss_c + self.args.beta * loss_a
                 
+                print(loss_c, loss_a, loss)    
+                    
                 # print("loss", loss)
                 optimizer.zero_grad()
                 loss.backward()
