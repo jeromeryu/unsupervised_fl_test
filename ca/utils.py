@@ -24,7 +24,7 @@ class CIFAR10Pair(CIFAR10):
 
 class STL10Pair(STL10):
     def __getitem__(self, index):
-        img, target = self.data[index], self.targets[index]
+        img, target = self.data[index], self.labels[index]
         img = Image.fromarray(img)
 
         if self.transform is not None:
