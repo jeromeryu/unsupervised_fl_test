@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from model import Model
+import os
 
 class DatasetSplit(Dataset):
     """An abstract Dataset class wrapped around Pytorch Dataset class.
@@ -40,35 +41,39 @@ class LocalModel(object):
         self.alignment_loader = alignment_loader
 
     def train_alignment(self, idx):
-        optimizer = optim.Adam(self.alignment_model.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
-        self.alignment_model.train()
+        model_path = './'+str(idx)+'_alignment.pth'
         
-        for it in tqdm(range(50)):
-            for pos_1, pos_2, target in self.alignment_loader:
-                pos_1, pos_2 = pos_1.cuda(non_blocking=True), pos_2.cuda(non_blocking=True)
-                feature_1, out_1 = self.alignment_model(pos_1)
-                feature_2, out_2 = self.alignment_model(pos_2)
-                # [2*B, D]
-                # print(out_1)
-                out = torch.cat([out_1, out_2], dim=0)
-                # [2*B, 2*B]
-                sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
-                mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
-                # [2*B, 2*B-1]
-                sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
+        if os.path.exists(model_path):
+            self.alignment_model.load_state_dict(torch.load(model_path))
+            
+        else:
+            optimizer = optim.Adam(self.alignment_model.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
+            self.alignment_model.train()
+            
+            for it in tqdm(range(50)):
+                for pos_1, pos_2, target in self.alignment_loader:
+                    pos_1, pos_2 = pos_1.cuda(non_blocking=True), pos_2.cuda(non_blocking=True)
+                    feature_1, out_1 = self.alignment_model(pos_1)
+                    feature_2, out_2 = self.alignment_model(pos_2)
+                    # [2*B, D]
+                    # print(out_1)
+                    out = torch.cat([out_1, out_2], dim=0)
+                    # [2*B, 2*B]
+                    sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
+                    mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
+                    # [2*B, 2*B-1]
+                    sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
 
-                # compute loss
-                pos_sim = torch.exp(torch.sum(out_1 * out_2, dim=-1) / self.args.temperature)
-                # [2*B]
-                pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
-                loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                
-        torch.save(self.alignment_model.state_dict(), './'+str(idx)+'_alignment.pth')
-
-        
+                    # compute loss
+                    pos_sim = torch.exp(torch.sum(out_1 * out_2, dim=-1) / self.args.temperature)
+                    # [2*B]
+                    pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
+                    loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    
+            torch.save(self.alignment_model.state_dict(), model_path)
 
     def train(self, net, global_dict, round):
         optimizer = optim.Adam(net.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
