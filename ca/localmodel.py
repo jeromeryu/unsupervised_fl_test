@@ -3,7 +3,7 @@ from torch import functional, jit
 from torch.utils import data
 from torch.utils.data import DataLoader, Dataset
 import torch.optim as optim
-import tqdm
+from tqdm import tqdm
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
