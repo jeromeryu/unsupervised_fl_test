@@ -42,6 +42,7 @@ class LocalModel(object):
 
     def train(self, net, global_dict, round):
         optimizer = optim.Adam(net.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
+        alignment_optimizer = optim.Adam(self.alignment_model.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
  
         criterion = nn.CrossEntropyLoss()
 
@@ -79,14 +80,31 @@ class LocalModel(object):
                 
                     
                 pos = pos.to(self.device)
-                h_a, z_a = net(pos)
-                h = torch.norm(torch.sub(h_a, h_i), dim=1)
+                h_net, z_net = net(pos)
+                h_a, z_a = self.alignment_model(pos)
+                h = torch.norm(torch.sub(h_a, h_net), dim=1)
                 loss_h += torch.vdot(h, h)
-                print('zz', torch.sub(z_a, z_i))
-                z = torch.norm(torch.sub(z_a, z_i), dim=1)
-                print('z',z)
+                z = torch.norm(torch.sub(z_a, z_net), dim=1)
                 loss_z += torch.vdot(z, z)
-        
+
+                
+                out = torch.cat([z_net, z_a], dim=0)
+                # [2*B, 2*B]
+                sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
+                mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
+                # [2*B, 2*B-1]
+                sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
+
+                # compute loss
+                pos_sim = torch.exp(torch.sum(z_net * z_a, dim=-1) / self.args.temperature)
+                # [2*B]
+                pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
+                alignment_loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
+                alignment_optimizer.zero_grad()
+                alignment_loss.backward()
+                alignment_optimizer.step()
+                
+                
                 # for chk, (pos, target) in enumerate(self.alignment_loader):
                     # if chk==a_idx:
                         # pos = pos.to(self.device)
