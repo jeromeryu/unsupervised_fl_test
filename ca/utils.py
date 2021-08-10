@@ -2,7 +2,7 @@ from PIL import Image
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, STL10
 from torchvision.transforms.transforms import RandomVerticalFlip
-
+import numpy as np
 
 class CIFAR10Pair(CIFAR10):
     """CIFAR10 Dataset.
@@ -24,9 +24,10 @@ class CIFAR10Pair(CIFAR10):
 
 class STL10Pair(STL10):
     def __getitem__(self, index):
-        img, target = self.data[index], self.labels[index]
-        img = Image.fromarray(img)
-
+        img, target = self.data[index], int(self.labels[index])
+        # img = Image.fromarray(img)
+        img = Image.fromarray(np.transpose(img, (1, 2, 0)))
+        
         if self.transform is not None:
             pos_1 = self.transform(img)
             pos_2 = self.transform(img)
