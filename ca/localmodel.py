@@ -66,7 +66,7 @@ class LocalModel(object):
                 loss.backward()
                 optimizer.step()
                 
-        torch.save(self.alignment_model.state_dict(0, './'+str(idx)+'_alignment.pth'))
+        torch.save(self.alignment_model.state_dict(), './'+str(idx)+'_alignment.pth')
 
         
 
