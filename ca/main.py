@@ -98,6 +98,9 @@ if __name__=='__main__':
     for i in range(args.num_users):
         local_model = LocalModel(args, train_data, user_groups[i], device, copy.deepcopy(alignment_dataloader))
         clients.append(local_model)
+        print("train alignment ", i)
+        local_model.train_alignment()
+        
     
     bar = tqdm(range(args.epochs))
     for round in bar:

@@ -39,6 +39,34 @@ class LocalModel(object):
         # self.alignment_dataset = alignment_dataset
         self.alignment_loader = alignment_loader
 
+    def train_alignment(self):
+        optimizer = optim.Adam(self.alignment_model.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
+        self.alignment_model.train()
+        
+        for it in tqdm(self.args.epochs):
+            for pos_1, pos_2, target in self.alignment_loader:
+                pos_1, pos_2 = pos_1.cuda(non_blocking=True), pos_2.cuda(non_blocking=True)
+                feature_1, out_1 = self.alignment_model(pos_1)
+                feature_2, out_2 = self.alignment_model(pos_2)
+                # [2*B, D]
+                # print(out_1)
+                out = torch.cat([out_1, out_2], dim=0)
+                # [2*B, 2*B]
+                sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
+                mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
+                # [2*B, 2*B-1]
+                sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
+
+                # compute loss
+                pos_sim = torch.exp(torch.sum(out_1 * out_2, dim=-1) / self.args.temperature)
+                # [2*B]
+                pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
+                loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+        
 
     def train(self, net, global_dict, round):
         optimizer = optim.Adam(net.parameters(), lr=self.args.lr, weight_decay=self.args.weight_decay)
@@ -88,21 +116,21 @@ class LocalModel(object):
                 loss_z += torch.vdot(z, z)
 
                 
-                out = torch.cat([z_net, z_a], dim=0)
-                # [2*B, 2*B]
-                sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
-                mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
-                # [2*B, 2*B-1]
-                sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
+                # out = torch.cat([z_net, z_a], dim=0)
+                # # [2*B, 2*B]
+                # sim_matrix = torch.exp(torch.mm(out, out.t().contiguous()) / self.args.temperature)
+                # mask = (torch.ones_like(sim_matrix) - torch.eye(2 * self.args.batch_size, device=sim_matrix.device)).bool()
+                # # [2*B, 2*B-1]
+                # sim_matrix = sim_matrix.masked_select(mask).view(2 * self.args.batch_size, -1)
 
-                # compute loss
-                pos_sim = torch.exp(torch.sum(z_net * z_a, dim=-1) / self.args.temperature)
-                # [2*B]
-                pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
-                alignment_loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
-                alignment_optimizer.zero_grad()
-                alignment_loss.backward(retain_graph=True)
-                alignment_optimizer.step()
+                # # compute loss
+                # pos_sim = torch.exp(torch.sum(z_net * z_a, dim=-1) / self.args.temperature)
+                # # [2*B]
+                # pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
+                # alignment_loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
+                # alignment_optimizer.zero_grad()
+                # alignment_loss.backward(retain_graph=True)
+                # alignment_optimizer.step()
                 
                 
                 # for chk, (pos, target) in enumerate(self.alignment_loader):
