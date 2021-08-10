@@ -81,8 +81,11 @@ if __name__=='__main__':
     train_data = utils.CIFAR10Pair(root='../data', train=True, 
                                    transform=utils.train_transform, download=True)
 
-    alignment_data = datasets.STL10(root='../data', split='train', 
-                                   transform=transform, download=True)
+    # alignment_data = datasets.STL10(root='../data', split='train', 
+    #                                transform=transform, download=True)
+
+    alignment_data = utils.STL10Pair(root='../data', split='train', 
+                                   transform=utils.train_transform, download=True)
 
     alignment_sampler = RandomSampler(alignment_data, replacement=True,
                                    num_samples=args.num_alignment_sample)
