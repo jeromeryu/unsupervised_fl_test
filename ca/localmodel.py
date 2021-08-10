@@ -101,7 +101,7 @@ class LocalModel(object):
                 pos_sim = torch.cat([pos_sim, pos_sim], dim=0)
                 alignment_loss = (- torch.log(pos_sim / sim_matrix.sum(dim=-1))).mean()
                 alignment_optimizer.zero_grad()
-                alignment_loss.backward()
+                alignment_loss.backward(retain_graph=True)
                 alignment_optimizer.step()
                 
                 
