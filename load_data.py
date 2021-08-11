@@ -33,9 +33,10 @@ def get_dataset(dataset_path):
     for key in json_data.keys():
         print(key)
         
+    dataset = dict()
     for i in range(10):
-        json_data[i] = np.array(json_data[i])
-    return json_data
+        dataset[i] = np.array(json_data[str(i)])
+    return dataset
     
 if __name__=='__main__':
     dataset_path = '/st1/jyryu/data'
