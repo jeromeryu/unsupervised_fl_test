@@ -50,9 +50,9 @@ if __name__=='__main__':
         # dataset = DatasetSplit(train_data, user_groups[i])
         # trainloader = DataLoader(dataset, batch_size=128, )
         # torch.save(dataset, save_path + str(i))
-        json_obj[i] = user_groups[i]
+        json_obj[i] = list(user_groups[i])
     
-    print(json_obj)
+    # print(json_obj)
     
     with open(save_path, 'w') as json_file:
         json.dump(json_obj, json_file)
