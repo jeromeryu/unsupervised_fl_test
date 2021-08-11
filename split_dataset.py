@@ -40,7 +40,7 @@ def cifar_iid(dataset, num_users):
 if __name__=='__main__':
     data_path = '/st1/jyryu/data'
     num_split = 10
-    save_path = '/st1/jyryu/data/cifar_10_split.json'
+    save_path = '/st1/jyryu/data/cifar10_split.json'
 
     train_data = datasets.CIFAR10(root=data_path, train=True, download=True)
     user_groups = cifar_iid(train_data, num_split)
