@@ -39,6 +39,11 @@ if __name__=='__main__':
     train_data = datasets.CIFAR10(root=dataset_path, train=True, download=True)
     user_dict = get_dataset(dataset_path)
 
+    for key in user_dict.keys():
+        print(key)
+        
+        
+    
     for i in range(10):
         dataset = DatasetSplit(train_data, user_dict[i])
         trainloader = DataLoader(dataset, batch_size=128)
