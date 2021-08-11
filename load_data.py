@@ -23,7 +23,7 @@ if __name__=='__main__':
     num_split = 10
     save_path = 'data_test/'
     for i in range(num_split):
-        dataset = DatasetSplit()
+        # dataset = DatasetSplit()
         dataset = torch.load(save_path + str(i))
         # dataset = dataset.load_state_dict(torch.load(save_path + str(i)))
         print(dataset)
