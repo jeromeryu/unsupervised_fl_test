@@ -30,9 +30,6 @@ def get_dataset(dataset_path):
     with open(os.path.join(dataset_path, 'cifar10_split.json')) as json_file:
         json_data = json.load(json_file)
 
-    for key in json_data.keys():
-        print(key)
-        
     dataset = dict()
     for i in range(10):
         dataset[i] = np.array(json_data[str(i)])
@@ -41,13 +38,8 @@ def get_dataset(dataset_path):
 if __name__=='__main__':
     dataset_path = '/st1/jyryu/data'
     
-    train_data = datasets.CIFAR10(root=dataset_path, train=True, download=True)
-    user_dict = get_dataset(dataset_path)
-
-    for key in user_dict.keys():
-        print(key)
-        
-        
+    train_data = datasets.CIFAR10(root=dataset_path, train=True, download=True, transform=transforms.ToTensor())
+    user_dict = get_dataset(dataset_path)    
     
     for i in range(10):
         dataset = DatasetSplit(train_data, user_dict[i])
