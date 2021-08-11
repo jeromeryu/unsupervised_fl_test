@@ -1,8 +1,11 @@
 from tarfile import NUL
+from numpy import sign
 import torch
 from torch.utils import data
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, transforms
+import json
+
 
 class DatasetSplit(Dataset):
     """An abstract Dataset class wrapped around Pytorch Dataset class.
@@ -20,27 +23,24 @@ class DatasetSplit(Dataset):
         # return torch.tensor(image), torch.tensor(label)
         return self.dataset[self.idxs[item]]
     
+def get_dataset(dataset_path):
+    import numpy as np
+    import os
+    
+    with open(os.path.join(dataset_path, 'cifar10_split.json')) as json_file:
+        json_data = json.load(json_file)
+    for i in range(10):
+        json_data[i] = np.array(json_data[i])
+    return json_data
+    
 if __name__=='__main__':
-    num_split = 10
-    save_path = 'data_test/'
-    for i in range(num_split):
-        # dataset = DatasetSplit()
-        dataset = torch.load(save_path + str(i))
-        # dataset = dataset.load_state_dict(torch.load(save_path + str(i)))
-        print(dataset)
-        
-        print(len(dataset))
-        transform = transforms.ToTensor()
+    dataset_path = '/st1/jyryu/data'
+    
+    train_data = datasets.CIFAR10(root=dataset_path, train=True, download=True)
+    user_dict = get_dataset(dataset_path)
 
-        dataset.transform = transform
-        
-        dataloader = DataLoader(dataset, batch_size = 128, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
-        
-        
-        it = iter(dataloader)
-        j, pos = next(it)
-        print(j)
-        print(pos)
-        
-        for j, pos in dataloader:
+    for i in range(10):
+        dataset = DatasetSplit(train_data, user_dict[i])
+        trainloader = DataLoader(dataset, batch_size=128)
+        for j, (a, b) in enumerate(trainloader):
             print(j)
