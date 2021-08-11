@@ -23,6 +23,6 @@ if __name__=='__main__':
     for i in range(num_split):
         dataset = torch.load(save_path + str(i))
         print(len(dataset))
-        dataloader = DataLoader(dataset, 128)
+        dataloader = DataLoader(dataset, batch_size = 128)
         for j in dataloader:
             print(j)
