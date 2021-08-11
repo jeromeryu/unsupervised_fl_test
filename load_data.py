@@ -25,7 +25,9 @@ if __name__=='__main__':
     for i in range(num_split):
         dataset = DatasetSplit()
         dataset = torch.load(save_path + str(i))
-        dataset = dataset.load_state_dict()
+        # dataset = dataset.load_state_dict(torch.load(save_path + str(i)))
+        print(dataset)
+        
         print(len(dataset))
         dataloader = DataLoader(dataset, batch_size = 128)
         for j in dataloader:
