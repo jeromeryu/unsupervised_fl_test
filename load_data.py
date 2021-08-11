@@ -21,7 +21,6 @@ if __name__=='__main__':
     num_split = 10
     save_path = 'data_test/'
     for i in range(num_split):
-        dataset = DatasetSplit()
         dataset = torch.load(save_path + str(i))
         print(len(dataset))
         dataloader = DataLoader(dataset, 128)
