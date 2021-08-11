@@ -52,6 +52,7 @@ if __name__=='__main__':
         # torch.save(dataset, save_path + str(i))
         json_obj[i] = user_groups[i]
     
+    print(json_obj)
     
     with open(save_path, 'w') as json_file:
         json.dump(json_obj, json_file)
