@@ -29,6 +29,10 @@ def get_dataset(dataset_path):
     
     with open(os.path.join(dataset_path, 'cifar10_split.json')) as json_file:
         json_data = json.load(json_file)
+
+    for key in json_data.keys():
+        print(key)
+        
     for i in range(10):
         json_data[i] = np.array(json_data[i])
     return json_data
