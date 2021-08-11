@@ -2,6 +2,7 @@ from tarfile import NUL
 import torch
 from torch.utils import data
 from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets, transforms
 
 class DatasetSplit(Dataset):
     """An abstract Dataset class wrapped around Pytorch Dataset class.
@@ -29,7 +30,12 @@ if __name__=='__main__':
         print(dataset)
         
         print(len(dataset))
+        transform = transforms.ToTensor()
+
+        dataset.transform = transform
+        
         dataloader = DataLoader(dataset, batch_size = 128, shuffle=True, num_workers=4, pin_memory=False, drop_last=True)
+        
         
         it = iter(dataloader)
         j, pos = next(it)
