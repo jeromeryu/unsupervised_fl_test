@@ -135,7 +135,7 @@ if __name__ == '__main__':
                           predictor=copy.deepcopy(predictor),
                           device=device,
                           dataset=train_dataset,
-                          idxs = i,
+                          idxs = user_groups[i],
                           args = args,
                           **config)
             o, t, p = local_trainer.train()
