@@ -104,7 +104,7 @@ class BYOLTrainer:
         print(loss)
         # save checkpoints
         # self.save_model(os.path.join(model_checkpoints_folder, 'model.pth'))
-        return self.online_network.state_dict(), self.target_network.state_dict(), self.predictor.state_dict()
+        return self.online_network.state_dict(), self.target_network.state_dict(), self.predictor.state_dict(), loss
 
     def update(self, batch_view_1, batch_view_2):
         # compute query feature

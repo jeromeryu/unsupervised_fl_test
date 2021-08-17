@@ -12,6 +12,11 @@ from trainer import BYOLTrainer
 from tqdm import tqdm
 import numpy as np
 import copy
+from torch.utils.data import DataLoader
+import linear
+import torch.optim as optim
+import pandas as pd
+from torchvision import transforms
 
 print(torch.__version__)
 torch.manual_seed(0)
@@ -128,7 +133,7 @@ if __name__ == '__main__':
         local_predictor_wrights = []
         m = max(int(args.fraction * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
-        
+        loss = 0
         for i in idxs_users:
             local_trainer = BYOLTrainer(online_network=copy.deepcopy(online_network),
                           target_network=copy.deepcopy(target_network),
@@ -138,10 +143,14 @@ if __name__ == '__main__':
                           idxs = user_groups[i],
                           args = args,
                           **config)
-            o, t, p = local_trainer.train()
+            o, t, p, l = local_trainer.train()
+            loss += l
             local_online_weights.append(o)
             local_target_weights.append(t)
             local_predictor_wrights.append(p)
+        
+        loss = loss / len(idxs_users)
+        print("loss ", epoch, loss)
         
         global_online = average_weights(local_online_weights)
         global_target = average_weights(local_target_weights)
@@ -149,5 +158,51 @@ if __name__ == '__main__':
         online_network.load_state_dict(global_online)
         target_network.load_state_dict(global_target)
         predictor.load_state_dict(global_predict)
+    
         
+    train_transform = transforms.Compose([
+        transforms.RandomResizedCrop(32),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
+        transforms.RandomGrayscale(p=0.2),
+        transforms.ToTensor(),
+        transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])])
 
+    test_transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])])
+
+
+    train_data_linear = datasets.CIFAR10(root='../data', train=True,
+                                    download=True, transform=train_transform)
+    test_data_linear = datasets.CIFAR10(root='../data', train=False,
+                                    download=True, transform=test_transform)
+
+    train_loader_linear = DataLoader(train_data_linear, batch_size=args.batch_size, shuffle=True)
+    test_loader_linear = DataLoader(test_data_linear, batch_size=args.batch_size, shuffle=True)
+
+    results = {'train_loss': [], 'train_acc@1': [], 'train_acc@5': [],
+            'test_loss': [], 'test_acc@1': [], 'test_acc@5': []}
+ 
+
+    net = linear.Net(num_class=len(train_data_linear.classes), net = global_online).to(device)
+    for param in net.f.parameters():
+        param.requires_grad = False
+    optimizer = optim.Adam(net.fc.parameters(), lr=1e-3, weight_decay=1e-6)
+
+
+    for epoch in range(1, args.linear_epochs + 1):
+        train_loss, train_acc_1, train_acc_5 = linear.train_val(net, train_loader_linear, optimizer)
+        results['train_loss'].append(train_loss)
+        results['train_acc@1'].append(train_acc_1)
+        results['train_acc@5'].append(train_acc_5)
+        test_loss, test_acc_1, test_acc_5 = linear.train_val(net, test_loader_linear, None)
+        results['test_loss'].append(test_loss)
+        results['test_acc@1'].append(test_acc_1)
+        results['test_acc@5'].append(test_acc_5)
+        
+        print('{} : {} {} {}'.format(epoch, test_loss, test_acc_1, test_acc_5))
+
+        # save statistics
+        data_frame = pd.DataFrame(data=results, index=range(1, epoch + 1))
+        data_frame.to_csv('../results/fedbyol_linear_statistics.csv', index_label='epoch')
