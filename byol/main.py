@@ -93,11 +93,13 @@ if __name__ == '__main__':
     parser.add_argument('--fraction', type=float, default=1)
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=1e-6)
+    parser.add_argument('--gpu', type=int, default=0)
+
     args = parser.parse_args()
 
     config = yaml.load(open("./config/config.yaml", "r"), Loader=yaml.FullLoader)
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:{}'.format(args.gpu) if torch.cuda.is_available() else 'cpu'
     print(f"Training with: {device}")
 
     data_transform = get_simclr_data_transforms(**config['data_transforms'])
