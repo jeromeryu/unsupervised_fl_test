@@ -98,6 +98,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     config = yaml.load(open("./config/config.yaml", "r"), Loader=yaml.FullLoader)
+    print(config)
 
     device = 'cuda:{}'.format(args.gpu) if torch.cuda.is_available() else 'cpu'
     print(f"Training with: {device}")
@@ -116,8 +117,7 @@ if __name__ == '__main__':
     # target encoder
     target_network = ResNet18(**config['network']).to(device)
 
-    optimizer = torch.optim.SGD(list(online_network.parameters()) + list(predictor.parameters()),
-                                **config['optimizer']['params'])
+    optimizer = torch.optim.SGD(list(online_network.parameters()) + list(predictor.parameters()), **config['optimizer']['params'])
 
     user_groups = cifar_iid(train_dataset, args.num_users)
 
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                           dataset=train_dataset,
                           idxs = i,
                           args = args,
-                          **config['trainer'])
+                          **config)
             o, t, p = local_trainer.train()
             local_online_weights.append(o)
             local_target_weights.append(t)

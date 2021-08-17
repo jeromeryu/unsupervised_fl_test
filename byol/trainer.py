@@ -34,11 +34,11 @@ class BYOLTrainer:
                                 **params['optimizer']['params'])
         self.device = device
         self.predictor = predictor
-        self.max_epochs = params['max_epochs']
+        # self.max_epochs = params['trainer']['max_epochs']
         # self.writer = SummaryWriter()
-        self.m = params['m']
-        self.batch_size = params['batch_size']
-        self.num_workers = params['num_workers']
+        self.m = params['trainer']['m']
+        # self.batch_size = params['trainer']['batch_size']
+        # self.num_workers = params['trainer']['num_workers']
         # self.checkpoint_interval = params['checkpoint_interval']
         # _create_model_training_folder(self.writer, files_to_same=["./config/config.yaml", "main.py", 'trainer.py'])
         
@@ -68,8 +68,8 @@ class BYOLTrainer:
 
     def train(self):
 
-        train_loader = DataLoader(self.dataset, batch_size=self.batch_size,
-                                  num_workers=self.num_workers, drop_last=False, shuffle=True)
+        train_loader = DataLoader(self.dataset, batch_size=self.args.batch_size,
+                                  drop_last=False, shuffle=True)
 
         niter = 0
         # model_checkpoints_folder = os.path.join(self.writer.log_dir, 'checkpoints')
