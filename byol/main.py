@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     data_transform = get_simclr_data_transforms(**config['data_transforms'])
 
-    train_dataset = datasets.CIFAR10(root='data', train=True, transform=MultiViewDataInjector([data_transform, data_transform]), download=True)
+    train_dataset = datasets.CIFAR10(root='../data', train=True, transform=MultiViewDataInjector([data_transform, data_transform]), download=True)
         # online network
     online_network = ResNet18(**config['network']).to(device)
     pretrained_folder = config['network']['fine_tune_from']
